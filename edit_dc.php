@@ -132,7 +132,13 @@ function edit_pt($link,$pt)
 							id=dod
 							onchange="do_work(\''.$id.'\',this);"
 							value=\''.mysql_to_india_date($pt['dod']).'\' >';
-	echo	'</td>';
+	//echo	'</td>';
+	
+	//echo 		'<td>';
+	echo 'Type:';
+						mk_select_from_table_ajax($id,$link,'discharge_type','',$pt['discharge_type'],140);
+	echo 		'</td>';
+	
 	echo 	'</tr>';
 	echo	'<tr><td>';
 	echo 		'LCDC:<input size=8  id=LCDC_no	value=\''.$pt['LCDC_no'].'\' 

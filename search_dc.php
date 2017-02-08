@@ -173,7 +173,12 @@ if(isset($_POST['action']))
 			}
 			$str='select * from pt '.$wr.$wr1 ;
 			//echo $str;
+			//export_to_csv($str,$link);
+			
+			echo '<form method=post><button formtarget=_blank name=str value=\''.base64_encode($str).'\' formaction=export.php>Export</button></form>';
+
 			view_data_sql($link,$str,'ipd','edit_dc.php');
+			
 		}
 	}
 }

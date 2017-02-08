@@ -773,4 +773,22 @@ function get_user_right($id)
 		return $u['right'];
 	}
 }
+
+
+function export_to_csv($sql,$link)
+{
+	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);}
+	$fp = fopen('php://output', 'w');
+	if ($fp && $result) 
+	{
+		header('Content-Type: text/csv');
+		header('Content-Disposition: attachment; filename="export.csv"');
+		while ($row = mysqli_fetch_assoc($result))
+		{
+			fputcsv($fp, array_values($row));
+		}
+	}	
+	
+}
+
 ?>
