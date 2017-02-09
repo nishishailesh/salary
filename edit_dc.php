@@ -245,8 +245,9 @@ function display_pt($pt)
 	echo 	'<tr>';
 	echo 		'<td>DOA:'.mysql_to_india_date($pt['doa']).'</td>';
 	echo 		'<td>DOO:'.mysql_to_india_date($pt['doo']).'</td>';
-	echo 		'<td>DOD:'.mysql_to_india_date($pt['dod']).'</td>';
-
+	echo 		'<td>DOD:'.mysql_to_india_date($pt['dod']).'';
+	echo		'<br>Type:'.$pt['discharge_type'];
+	echo 		'</td>';
 	echo 	'</tr>';
 	echo	'<tr><td>';
 	echo 		'LCDC:'.$pt['LCDC_no'].'</td>';	

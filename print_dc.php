@@ -164,7 +164,9 @@ $str=$str.	'<tr>';
 $str=$str.		'<td style="border-collapse: collapse;border: 1px solid black;">DOA:'.mysql_to_india_date($pt['doa']).'</td>';
 $str=$str.		'<td style="border-collapse: collapse;border: 1px solid black;">DOO:'.mysql_to_india_date($pt['doo']).'</td>';
 $str=$str.		'<td style="border-collapse: collapse;border: 1px solid black;">DOD:'.mysql_to_india_date($pt['dod']).'</td>';
-
+$str=$str.		'</tr><tr><td colspan="3" style="border-collapse: collapse;border: 1px solid black;">
+						Discharge Type:'.$pt['discharge_type'].
+				'</td>';
 $str=$str.	'</tr><tr><td style="border-collapse: collapse;border: 1px solid black;">';
 $str=$str.		'LCDC:'.$pt['LCDC_no'].'</td>';	
 $str=$str.		'<td style="border-collapse: collapse;border: 1px solid black;">HPE:'.$pt['HPE_no'].'</td>';	
