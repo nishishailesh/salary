@@ -91,20 +91,17 @@ echo 	'</tr>';
 
 echo 	'<tr>';
 echo 		'<td>DOA</td><td>
-					<input size=10 type=text readonly
-						class=datepicker 
+					<input size=10 type=text
 						name=doa id=doa
 						 >';
 echo	'</td>';
 echo 		'<td>DOO</td><td>
-					<input size=10 type=text readonly
-						class=datepicker 
+					<input size=10 type=text 
 						name=doo id=doo
 						 >';
 echo	'</td>';
 echo 		'<td>DOD</td><td>
-					<input size=10 type=text readonly
-						class=datepicker 
+					<input size=10 type=text 
 						name=dod id=dod
 						 >';
 echo	'</td>';
@@ -124,8 +121,14 @@ echo 		'<td>HPE</td><td><input name=HPE_no	size=10 placeholder=HPE_no></td>';
 echo 		'<td>MLC</td><td><input name=MLC_no 
 						type=text placeholder=MLC_no size=10></td>';
 echo 	'</tr>';
+echo 	'<tr><td>OT<td colspan=10><input type=text name=OT placeholder="Write word to find"></td></tr>';
 echo 	'<tr><td align=center colspan=6><input type=submit  name=action value=search></td></tr>';	
 echo 	'</table>';
+
+echo '<table class=border style="background-color:lightblue;"><tr>
+<td>If you wish to separate Operated from Non-Operated patients, write a specific word in operative notes (e.g OT) and search for it in OT field above</td>
+</tr><tr><td>In non-operated patient keep OT field empty</td></tr>
+<table>';
 
 echo '</form>';
 	
@@ -138,14 +141,14 @@ function copy_non_empty_element($post)
 	{
 		if(strlen($value)>0 && $key!='action')
 		{
-			if($key=='doa' || $key=='doo' ||$key=='dod' )
-			{
-				$ret[$key]=india_to_mysql_date($value);
-			}
-			else
-			{
+			//if($key=='doa' || $key=='doo' ||$key=='dod' )
+			//{
+			//	$ret[$key]=india_to_mysql_date($value);
+			//}
+			//else
+			//{
 				$ret[$key]=$value;
-			}
+			//}
 		}
 	}
 	return $ret;

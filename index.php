@@ -45,7 +45,7 @@ echo '
 <form method=post action=start_dc.php>
 <table style="background-color:lightblue;"" align=center class=border>
 <tr><th colspan=2>New Civil Hospital Surat</th></tr>
-<tr><th  colspan=2>Dischare Card<br>(For clinicians only)</th></tr>
+<tr><th  colspan=2>Discharge Card<br>(For clinicians only)</th></tr>
 <tr>
 <td>Login ID</td>
 <td><input style="width:100%" type=text name=login placeholder=Username></td>
