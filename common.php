@@ -21,7 +21,7 @@ function run_ajax(str,rid)
 	};
 
 	//Setting FORM data
-	xhttp.open("POST", "save_dc.php", true);
+	xhttp.open("POST", "save_salary.php", true);
 	
 	//Something required ad header
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -33,18 +33,17 @@ function run_ajax(str,rid)
 	//alert("Used to check if script reach here");
 }
 
-function make_post_string(id,t)
+function make_post_string(id,idd,t)
 {
 	k=t.id;
 	v=encodeURIComponent(t.value);					//to encode almost everything
-	post=\'field=\'+k+\'&value=\'+v+\'&id=\'+id;
-	//post=post.replace(/\+/g,\'%2B\');
+	post=\'field=\'+k+\'&value=\'+v+\'&staff_id=\'+id+\'&bill_number=\'+idd;
 	return post;							
 }
 
-function do_work(id,t)
+function do_work(id,idd,t)
 {
-	str=make_post_string(id,t);
+	str=make_post_string(id,idd,t);
 	//alert(post);
 	run_ajax(str,\'response\');
 }
@@ -64,7 +63,7 @@ function hide(one) {
 <link rel="stylesheet" type="text/css" href="date/datepicker.css" /> 
 ';
 
-require_once 'menu_hmis.php';
+require_once 'menu_salary.php';
 require_once '/var/gmcs_config/staff.conf';
 
 function login_varify()
@@ -77,7 +76,7 @@ function login_varify()
 /////////////////////////////////
 function select_database($link)
 {
-	return mysqli_select_db($link,'dc');
+	return mysqli_select_db($link,'salary');
 }
 
 
@@ -332,6 +331,34 @@ function update_or_insert_field_by_id($link,$table,$id_field,$id_value,$field,$v
 	}
 }
 
+function update_or_insert_field_by_id_tpc($link,$table,$id_field,$id_value,$id_fieldd,$id_valuee,$field,$value)
+{
+	if(get_raw($link,'select `'.$id_field.'` from `'.$table.'` 
+				where       `'.$id_field.'`=\''.$id_value.'\'
+						and `'.$id_fieldd.'`=\''.$id_valuee.'\' ')===FALSE)
+	{
+		//Try to insert
+		$sqli='insert into `'.$table.'` (`'.$id_field.'`,`'.$field.'`) values (\''.$id_value.'\', \''.$value.'\')';
+		//echo $sqli;
+		if(!$resulti=mysqli_query($link,$sqli)){echo mysqli_error($link);return FALSE;}
+		else
+		{
+			return mysqli_affected_rows($link);
+		}
+	}
+	else
+	{
+		//Else update
+		$sql='update `'.$table.'` set `'.$field.'`=\''.$value.'\' where `'.$id_field.'`=\''.$id_value.'\' and `'.$id_fieldd.'`=\''.$id_valuee.'\'';
+		//echo $sql;
+		if(!$result=mysqli_query($link,$sql))
+		{
+			echo mysqli_error($link);
+			return FALSE;
+		}
+	}
+}
+
 function insert_field_by_id($link,$table,$id_field,$id_value,$field,$value)
 {
 		//Try to insert
@@ -359,6 +386,19 @@ function insert_id($link,$table,$id_field,$id_value)
 	}
 }
 
+function insert_id_tpc($link,$table,$id_field,$id_value,$id_fieldd,$id_valuee)
+{
+	$sqli='insert into `'.$table.'` (`'.$id_field.'`,`'.$id_fieldd.'`) values (\''.$id_value.'\',\''.$id_valuee.'\')';
+	//echo $sqli;
+	if(!$resulti=mysqli_query($link,$sqli))
+	{
+		echo mysqli_error($link);return FALSE;
+	}
+	else
+	{
+		return mysqli_insert_id($link);
+	}
+}
 
 function update_or_insert_filename_field_by_id($link,$table,$id_field,$id_value,$field,$value)
 {
