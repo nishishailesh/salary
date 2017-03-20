@@ -48,15 +48,18 @@ function menu()
 		
 echo '
 <form method=post>
-<table class=\"menu\">
+<table align=center class=\"menu\">
 <tr><td>
 		<button type=button onclick="showhidemenu(\'button1\')">Salary</button>
 		<table  id="button1" class="menu" style="position:absolute; display:none;">
 			<tr><td>
-				<button formaction=new_salary.php type=submit onclick="hidemenu()" name=new>New</button>
+				<button formaction=get_id_for_new_salary.php type=submit onclick="hidemenu()" name=new>New</button>
+			</td></tr>	
+			<tr><td>
+				<button formaction=get_id_for_edit_salary.php type=submit onclick="hidemenu()" name=new>Edit</button>
 			</td></tr>			
 			<tr><td>
-				<button formaction=search_dc.php type=submit onclick="hidemenu()" name=new>Search</button>
+				<button formaction=copy_bill.php type=submit onclick="hidemenu()" name=new>Copy Bill</button>
 			</td></tr>
 		</table>
 			

@@ -152,7 +152,7 @@ function mk_select_from_table($link,$field,$disabled,$default)
 		return TRUE;
 }
 
-function mk_select_from_table_ajax($id,$link,$field,$disabled,$default,$size='')
+function mk_select_from_table_ajax($id,$idd,$link,$field,$disabled,$default,$size='')
 {
 	$sql='select `'.$field.'` from '.$field;
 	//echo $sql;
@@ -173,6 +173,29 @@ function mk_select_from_table_ajax($id,$link,$field,$disabled,$default,$size='')
 		echo '</select>';	
 		return TRUE;
 }
+
+function mk_select_from_table_ajax_dpc($id,$idd,$link,$field,$disabled,$default,$size='')
+{
+	$sql='select `'.$field.'` from '.$field;
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	
+	echo '<select style="width:'.$size.'px;" '.$disabled.' name=\''.$field.'\'  id=\''.$field.'\' 
+					onchange="do_work(\''.$id.'\',\''.$idd.'\',this)"  >';
+		while($result_array=mysqli_fetch_assoc($result))
+		{
+			if($result_array[$field]==$default)
+			{
+			echo '<option selected  > '.$result_array[$field].' </option>';
+			}
+			else
+			{
+			echo '<option >'.$result_array[$field].' </option>';
+			}
+		}
+		echo '</select>';	
+		return TRUE;
+}
+
 
 function mk_select_from_sql($link,$sql,$field_name,$form_name,$disabled,$default)
 {
@@ -829,6 +852,21 @@ function export_to_csv($sql,$link)
 		}
 	}	
 	
+}
+
+function get_staff_id($link)
+{
+$sql='select staff_id,fullname,department,post from staff
+order by department,post';
+
+if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
+echo '<select name=staff_id>';
+while($ar=mysqli_fetch_assoc($result))
+{
+echo '<option value=\''.$ar['staff_id'].'\'>'.''.$ar['department'].'-'.$ar['post'].'-'.
+$ar['fullname'].'-'.$ar['staff_id'].'</option>';
+}
+echo '</select>';
 }
 
 ?>
