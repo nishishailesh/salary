@@ -42,10 +42,10 @@ echo '<body>';
 unset($_SESSION['login']);
 unset($_SESSION['password']);
 echo '
-<form method=post action=start_dc.php>
+<form method=post action=start_salary.php>
 <table style="background-color:lightblue;"" align=center class=border>
-<tr><th colspan=2>New Civil Hospital Surat</th></tr>
-<tr><th  colspan=2>Discharge Card<br>(For clinicians only)</th></tr>
+<tr><th colspan=2>Government Medical College Surat</th></tr>
+<tr><th  colspan=2>Salary Management</th></tr>
 <tr>
 <td>Login ID</td>
 <td><input style="width:100%" type=text name=login placeholder=Username></td>
