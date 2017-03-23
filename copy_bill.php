@@ -2,7 +2,7 @@
 session_start();
 require_once 'common.php';
 
-print_r($_POST);
+//print_r($_POST);
 //////////////
 // Every body who can login and belong to same department can edit it
 //////////////
@@ -47,6 +47,12 @@ function read_bill_number_to_copy($link)
 	echo '<input type=text name=to_bill_number placeholder="YYMMNN">';
 	echo '</td></tr><tr><td  align=center colspan=2>';
 	echo '<input type=submit name=submit onclick="return confirm(\'New Bill will have all salary like old bill\')">';
+	echo '</td></tr><tr><td colspan=2>';
+	echo 'Example: Bill Number for Jan-2017 for bill 4 may be  20170104<br>';
+	echo 'Example: Bill Number for Jan-2017 for bill 5 may be  20170105<br>';
+	echo 'Example: Arrears Bill for Jan-2017 for bill 4 may be 20170154<br>';
+	echo 'Example: Arrears Bill for Jan-2017 for bill 5 may be 20170155<br>';
+	echo 'Make sure that bill number give some idea about what it is<br>';
 	echo '</td></tr></table>';	
 }
 
@@ -96,12 +102,17 @@ $link=connect();
 
 menu();
 
-read_bill_number_to_copy($link);
-if(isset($_POST['submit']) && isset($_POST['from_bill_number'])&&isset($_POST['to_bill_number']))
+if(isset($_POST['submit']))
 {
-	copy_bill($link,$_POST['from_bill_number'],$_POST['to_bill_number']);
-	list_bill($link,$_POST['to_bill_number']);
-}
+	if(isset($_POST['from_bill_number'])&&isset($_POST['to_bill_number']))
+	{
+		copy_bill($link,$_POST['from_bill_number'],$_POST['to_bill_number']);
+	}
 
+}
+else
+{
+	read_bill_number_to_copy($link);
+}
 ?>
 

@@ -70,7 +70,11 @@ function showhide(one) {
 	}
 }
 
-			
+function read_bn()
+{
+	xx=prompt(\'Copy to bill number:\');
+	
+}
 </script>
 <script type="text/javascript" src="date/datepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="date/datepicker.css" /> 
@@ -1009,24 +1013,40 @@ function new_salary($link,$staff_id,$bill_number)
 
 }			
 
+
 function list_all_salary($link,$staff_id)
 {
 	$sql='select * from salary where staff_id=\''.$staff_id.'\'';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'none\';">Hide</button>';
 	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'block\';">Show</button>';
-	echo '<input type=image src="showhide.png" 
-		style="border: 2px blue dashed;border-radius:10px;padding: 5px;" width="20" height="20" onclick="showhide(\'all_salary\')">';
+	echo '<button type=button onclick="showhide(\'all_salary\')">Show/Hide</button>';
+
+	//echo '<input type=image src="showhide.png" 
+	//	style="border: 2px blue dashed;border-radius:10px;padding: 5px;" width="20" height="20" onclick="showhide(\'all_salary\')">';
 
 	echo '<table class=border id=all_salary>';
 	while($result_array=mysqli_fetch_assoc($result))
 	{
 		echo '<tr>';
+		
 		echo '<td><form method=post>
+		<table class=noborder><tr><td><button type=submit name=submit value=edit>E</button></td><td>
+		<button type=submit name=submit value=delete 
+			onclick="return confirm(\'The record will be permanently deleted\')">D</button></td><td>
+		
+		<button type=submit name=submit value=copy formaction=copy_salary.php>C</button></td></tr></table>
+
+		<input type=hidden name=staff_id value=\''.$result_array['staff_id'].'\'>
+		<input type=hidden name=bill_number value=\''.$result_array['bill_number'].'\'>
+		<input type=hidden name=bill_vs_staff value=staff>
+	</form></td>';
+		
+		/*echo '<td><form method=post>
 				<input type=submit value=edit>
 				<input type=hidden name=staff_id value=\''.$result_array['staff_id'].'\'>
 				<input type=hidden name=bill_number value=\''.$result_array['bill_number'].'\'>
-			</form></td>';		
+			</form></td>';		*/
 		foreach($result_array as $value)
 		{
 
@@ -1055,10 +1075,12 @@ function list_bill($link,$bill_number)
 				<table class=noborder><tr><td><button type=submit name=submit value=edit>E</button></td><td>
 				<button type=submit name=submit value=delete 
 					onclick="return confirm(\'The record will be permanently deleted\')">D</button></td><td>
-				<button type=submit name=submit value=copy>C</button></td></tr></table>
+				<button type=submit name=submit value=copy formaction=copy_salary.php>C</button></td></tr></table>
 
 				<input type=hidden name=staff_id value=\''.$result_array['staff_id'].'\'>
 				<input type=hidden name=bill_number value=\''.$result_array['bill_number'].'\'>
+				<input type=hidden name=bill_vs_staff value=bill>
+
 			</form></td>';		
 		foreach($result_array as $value)
 		{
@@ -1210,6 +1232,55 @@ function select_bill_number($link)
 	mk_select_from_sql($link,$sql,'bill_number','bill_number','','');
 	echo '<input type=submit name=submit value=show>';
 	echo '</form></td></tr></table>';
+}
+
+
+function copy_salary($link,$from_staff,$to_staff,$from_bn,$to_bn)
+{
+	//incomplate
+	$sql='select * from salary where 
+			staff_id=\''.$from_staff.'\' and
+			bill_number=\''.$from_bn.'\'';
+	//echo $sql;
+
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+
+	while($ra=mysqli_fetch_assoc($result))
+	{
+		$f='';
+		$v='';
+		foreach($ra as $key=>$value)
+		{
+			$f=$f.' `'.$key.'`,';
+			
+			if($key=='bill_number')
+			{
+				$v=$v.' \''.$to_bn.'\',';
+			}
+			elseif($key=='staff_id')
+			{
+					$v=$v.' \''.$to_staff.'\',';
+			}
+			else
+			{
+				$v=$v.' \''.$value.'\',';
+			}
+		}
+		$f=substr($f,0,-1);
+		$v=substr($v,0,-1);
+		$final= 'insert into salary ('.$f.') values('.$v.')';
+		//echo $final;
+
+		if(!$result_s=mysqli_query($link,$final))
+		{
+			echo mysqli_error($link);return FALSE;
+		}
+		else
+		{
+			mysqli_insert_id($link);
+		}
+	}
+
 }
 
 ?>
