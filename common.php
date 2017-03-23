@@ -194,6 +194,7 @@ function mk_select_from_table_ajax($id,$idd,$link,$field,$disabled,$default,$siz
 function mk_select_from_table_ajax_dpc($id,$idd,$link,$field,$disabled,$default,$size='')
 {
 	$sql='select `'.$field.'` from '.$field;
+	//echo $sql;
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	
 	echo '<select style="width:'.$size.'px;" '.$disabled.' name=\''.$field.'\'  id=\''.$field.'\' 
@@ -894,14 +895,14 @@ function export_to_csv($sql,$link)
 
 function get_staff_id($link)
 {
-$sql='select staff_id,fullname,department,post from staff
-order by department,post';
+$sql='select staff_id,fullname,department,_post from staff
+order by department,_post';
 
 if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
 echo '<select name=staff_id>';
 while($ar=mysqli_fetch_assoc($result))
 {
-echo '<option value=\''.$ar['staff_id'].'\'>'.''.$ar['department'].'-'.$ar['post'].'-'.
+echo '<option value=\''.$ar['staff_id'].'\'>'.''.$ar['department'].'-'.$ar['_post'].'-'.
 $ar['fullname'].'-'.$ar['staff_id'].'</option>';
 }
 echo '</select>';
@@ -977,7 +978,7 @@ function new_salary($link,$staff_id,$bill_number)
 												'department',$staff_detail['department']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
-												'post',$staff_detail['post']);
+												'_post',$staff_detail['_post']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
 												'gpf_acc',$staff_detail['gpf_acc']);
@@ -990,6 +991,16 @@ function new_salary($link,$staff_id,$bill_number)
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
 												'bank_acc_number',$staff_detail['bank_acc_number']);
+			update_or_insert_field_by_id_tpc($link,'salary',
+												'staff_id',$staff_id,'bill_number',$bill_number,
+												'_pan',$staff_detail['_pan']);
+			update_or_insert_field_by_id_tpc($link,'salary',
+												'staff_id',$staff_id,'bill_number',$bill_number,
+												'quarter',$staff_detail['quarter']);
+			update_or_insert_field_by_id_tpc($link,'salary',
+												'staff_id',$staff_id,'bill_number',$bill_number,
+												'basic_catagory',$staff_detail['basic_catagory']);
+																																																																											
 																																				
 		$slr=get_raw($link,'select * from salary
 							where 
@@ -1026,6 +1037,7 @@ function list_all_salary($link,$staff_id)
 	//	style="border: 2px blue dashed;border-radius:10px;padding: 5px;" width="20" height="20" onclick="showhide(\'all_salary\')">';
 
 	echo '<table class=border id=all_salary>';
+	display_salary_header($link);
 	while($result_array=mysqli_fetch_assoc($result))
 	{
 		echo '<tr>';
@@ -1057,6 +1069,30 @@ function list_all_salary($link,$staff_id)
 	echo '</table>';
 }	
 
+function display_salary_header($link)
+{
+	$sql='desc salary';
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	echo '<tr><td>Action</td>';
+	while($ra=mysqli_fetch_assoc($result))
+	{
+			if($ra['Field'][0]=='p')
+			{
+				$display=substr($ra['Field'],1);
+			}
+			elseif($ra['Field'][0]=='m')
+			{
+				$display=substr($ra['Field'],1);
+			}
+			else
+			{
+				$display=$ra['Field'];
+			}
+		echo '<th>'.$display.'</th>';
+	}
+	echo '</tr>';
+}
+
 function list_bill($link,$bill_number)
 {
 	$sql='select * from salary where bill_number=\''.$bill_number.'\'';
@@ -1068,6 +1104,7 @@ function list_bill($link,$bill_number)
 	//	style="border: 2px blue dashed;border-radius:10px;padding: 5px;" width="20" height="20" 
 	//	onclick="showhide(\'all_salary\')">';
 	echo '<table class=border id=all_salary>';
+	display_salary_header($link);
 	while($result_array=mysqli_fetch_assoc($result))
 	{
 		echo '<tr>';
@@ -1128,7 +1165,7 @@ function display_salary($link,$slr)
 						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'department','',$slr['department']);
 	echo 			'</th>
 					<th>';
-						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'post','',$slr['post']);	
+						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'_post','',$slr['_post']);	
 	echo 			'</th>
 				</tr>';
 	echo 		'<tr>';
@@ -1159,8 +1196,13 @@ function display_salary($link,$slr)
 	echo 		'<tr>';
 	echo 			'<th>GPF:'.$slr['gpf_acc'].'</th>
 					<th>CPF:'.$slr['cpf_acc'].'</th>
-					<th>ID:'.$slr['staff_id'].'</th>
+					<th>ID/AADHAR:'.$slr['staff_id'].'</th>
 				</tr>';
+	echo 		'<tr>';
+	echo 			'<th>PAN:'.$slr['_pan'].'</th>
+					<th>QTR:'.$slr['quarter'].'</th>
+					<th>Pay of '.$slr['basic_catagory'].'</th>
+				</tr>';				
 	echo 	'</table>';
 	
 	//echo '<input type=hidden name=staff_id value=\''.$slr['staff_id'].'\'>';
@@ -1168,8 +1210,9 @@ function display_salary($link,$slr)
 	
 	echo '<table align=center class=border><tr><td style=" vertical-align: top;"  colspan=2><table class=border>';
 	
-	$exclude=array('fullname','department','post','bank','bank_acc_number','bill_number',
-						'budget_head','gpf_acc','cpf_acc','staff_id','remark','staff_position_id');
+	$exclude=array('fullname','department','_post','bank','bank_acc_number','bill_number',
+						'budget_head','gpf_acc','cpf_acc','staff_id','remark',
+						'staff_position_id','_pan','quarter','basic_catagory');
 
 	$plus=0;
 	$minus=0;

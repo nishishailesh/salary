@@ -50,7 +50,7 @@ menu();
 	isset($_POST['staff_id']) &&
 	isset($_POST['submit']))
 	{
-		if($_POST['submit']=='edit')
+		if($_POST['submit']=='edit' ||$_POST['submit']=='refresh')
 		{
 			edit_salary($link,$_POST['staff_id'],$_POST['bill_number']);
 		}
