@@ -2,7 +2,7 @@
 session_start();
 require_once 'common.php';
 
-print_r($_POST);
+//print_r($_POST);
 //////////////
 // Every body who can login and belong to same department can edit it
 //////////////
@@ -41,19 +41,42 @@ function read_bill_number_to_copy($link)
 {
 	echo '<form method=post>';
 	echo '<table class=border style="background-color:lightgreen;">';
+	
 	echo '<tr><th>Selected staff</th><td>';
 	echo $_POST['staff_id'].'<td></tr>';
+	
 	echo '<tr><th>Selected Bill Number</th><td>';
 	echo $_POST['bill_number'];
+	
+	echo '</td><tr><th>Period From:</th><td>';
+	echo $_POST['bill_number'];
+
+	echo '</td><tr><th>Period To:</th><td>';
+	echo $_POST['bill_number'];
+
+	echo '</td><tr><th>Bill Type:</th><td>';
+	echo $_POST['bill_number'];
+
+	echo '</td><tr><th>Extra Remarks:</th><td>';
+	echo $_POST['bill_number'];
+	
+	echo '</td><tr><th>Head</th><td>';
+	echo $_POST['bill_number'];
+	
+	
+
+	
 	echo '<input type= hidden name=bill_number value=\''.$_POST['bill_number'].'\'>';
 	echo '<input type= hidden name=staff_id value=\''.$_POST['staff_id'].'\'>';
 	echo '<input type= hidden name=bill_vs_staff value=\''.$_POST['bill_vs_staff'].'\'>';
 
 	echo '</tr><tr><th>Copy to bill number</th><td>';
 	echo '<input type=text name=to_bill_number placeholder="YYMMNN">';
+	
 	echo '</td></tr><tr><td  align=center colspan=2>';
 	echo '<input type=submit name=submit value=copy_salary onclick="return confirm(\'Salary will be copied to new bill\')">';
 	echo '</td></tr><tr><td colspan=2>';
+	
 	echo 'Example: Bill Number for Jan-2017 for bill 4 may be  20170104<br>';
 	echo 'Example: Bill Number for Jan-2017 for bill 5 may be  20170105<br>';
 	echo 'Example: Arrears Bill for Jan-2017 for bill 4 may be 20170154<br>';
@@ -68,14 +91,23 @@ menu();
 
 if(isset($_POST['submit']) && isset($_POST['bill_number'])&&isset($_POST['staff_id']))
 {
-	if($_POST['submit']=='copy')
-	{
-		read_bill_number_to_copy($link);
-	}		
-	if($_POST['submit']=='copy_salary')
+	if($_POST['submit']=='copy_salary') //from read_bill_number_to_copy
 	{
 		copy_salary($link,$_POST['staff_id'],$_POST['staff_id'],$_POST['bill_number'],$_POST['to_bill_number']);
 	}
+
+	if($_POST['submit']=='copy') //from main edc menu
+	{
+		read_bill_number_to_copy($link);
+	}		
+	if($_POST['submit']=='edit' ||$_POST['submit']=='refresh')
+	{
+		edit_salary($link,$_POST['staff_id'],$_POST['bill_number']);
+	}
+	elseif($_POST['submit']=='delete')
+	{
+		delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_number',$_POST['bill_number']);
+	}	
 }
 
 if(isset($_POST['bill_vs_staff']))
@@ -89,5 +121,6 @@ if(isset($_POST['bill_vs_staff']))
 		list_bill($link,$_POST['bill_number']);
 	}
 }
+
 ?>
 

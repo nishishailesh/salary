@@ -1,86 +1,16 @@
 <?php
 
 
-//This echo make coommon.php unsuitable for tcpdf
-echo '<script>
-
-function run_ajax(str,rid)
+if(!isset($nojunk))
 {
-	//create object
-	xhttp = new XMLHttpRequest();
-	
-	//4=request finished and response is ready
-	//200=OK
-	//when readyState status is changed, this function is called
-	//responceText is HTML returned by the called-script
-	//it is best to put text into an element
-	xhttp.onreadystatechange = function() {
-	  if (this.readyState == 4 && this.status == 200) {
-		document.getElementById(rid).innerHTML = this.responseText;
-	  }
-	};
-
-	//Setting FORM data
-	xhttp.open("POST", "save_salary.php", true);
-	
-	//Something required ad header
-	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	
-	// Submitting FORM
-	xhttp.send(str);
-	
-	//used to debug script
-	//alert("Used to check if script reach here");
+	require_once 'common_js.php';
 }
 
-function make_post_string(id,idd,t)
+if(!isset($nojunk))
 {
-	k=t.id;
-	v=encodeURIComponent(t.value);					//to encode almost everything
-	post=\'field=\'+k+\'&value=\'+v+\'&staff_id=\'+id+\'&bill_number=\'+idd;
-	return post;							
+	require_once 'menu_salary.php';
 }
 
-function do_work(id,idd,t)
-{
-	str=make_post_string(id,idd,t);
-	//alert(post);
-	run_ajax(str,\'response\');
-}
-
-function getfrom(one,two) {
-			document.getElementById(two).value =one.value;
-		}
-	
-
-function hide(one) {
-				document.getElementById(one).style.display = "none";
-		}
-
-
-
-function showhide(one) {
-	if(document.getElementById(one).style.display == "none")
-	{
-		document.getElementById(one).style.display = "block";
-	}
-	else
-	{
-		document.getElementById(one).style.display = "none";
-	}
-}
-
-function read_bn()
-{
-	xx=prompt(\'Copy to bill number:\');
-	
-}
-</script>
-<script type="text/javascript" src="date/datepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="date/datepicker.css" /> 
-';
-
-require_once 'menu_salary.php';
 require_once '/var/gmcs_config/staff.conf';
 
 function login_varify()
@@ -895,14 +825,14 @@ function export_to_csv($sql,$link)
 
 function get_staff_id($link)
 {
-$sql='select staff_id,fullname,department,_post from staff
-order by department,_post';
+$sql='select staff_id,fullname,department,post from staff
+order by department,post';
 
 if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
 echo '<select name=staff_id>';
 while($ar=mysqli_fetch_assoc($result))
 {
-echo '<option value=\''.$ar['staff_id'].'\'>'.''.$ar['department'].'-'.$ar['_post'].'-'.
+echo '<option value=\''.$ar['staff_id'].'\'>'.''.$ar['department'].'-'.$ar['post'].'-'.
 $ar['fullname'].'-'.$ar['staff_id'].'</option>';
 }
 echo '</select>';
@@ -978,7 +908,7 @@ function new_salary($link,$staff_id,$bill_number)
 												'department',$staff_detail['department']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
-												'_post',$staff_detail['_post']);
+												'post',$staff_detail['post']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
 												'gpf_acc',$staff_detail['gpf_acc']);
@@ -993,13 +923,11 @@ function new_salary($link,$staff_id,$bill_number)
 												'bank_acc_number',$staff_detail['bank_acc_number']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
-												'_pan',$staff_detail['_pan']);
+												'pan',$staff_detail['pan']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_number',$bill_number,
 												'quarter',$staff_detail['quarter']);
-			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
-												'basic_catagory',$staff_detail['basic_catagory']);
+
 																																																																											
 																																				
 		$slr=get_raw($link,'select * from salary
@@ -1071,24 +999,14 @@ function list_all_salary($link,$staff_id)
 
 function display_salary_header($link)
 {
+	$sh=get_salary_head($link);
 	$sql='desc salary';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	echo '<tr><td>Action</td>';
 	while($ra=mysqli_fetch_assoc($result))
 	{
-			if($ra['Field'][0]=='p')
-			{
-				$display=substr($ra['Field'],1);
-			}
-			elseif($ra['Field'][0]=='m')
-			{
-				$display=substr($ra['Field'],1);
-			}
-			else
-			{
-				$display=$ra['Field'];
-			}
-		echo '<th>'.$display.'</th>';
+			if(isset($sh[$ra['Field']])){$nm=$sh[$ra['Field']]['ooe'];}else{$nm='';}	
+			echo '<th>'.$nm.' '.$ra['Field'].'</th>';
 	}
 	echo '</tr>';
 }
@@ -1139,8 +1057,23 @@ function edit_salary($link,$staff_id,$bill_number)
 	display_salary($link,$slr);
 }
 
+function get_salary_head($link)
+{
+	$sql='select * from salary_head';
+	
+	if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
+	while($ar=mysqli_fetch_assoc($result))
+	{
+			$ret[$ar['edp']]=$ar;
+	}
+	return $ret;
+}
+
+
 function display_salary($link,$slr)
 {
+	$sh=get_salary_head($link);
+	
 	if($slr===FALSE || count($slr)<=0){return false;}
 	echo '<div onclick="hide(\'spn\')" id=response></div>';
 	
@@ -1165,14 +1098,14 @@ function display_salary($link,$slr)
 						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'department','',$slr['department']);
 	echo 			'</th>
 					<th>';
-						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'_post','',$slr['_post']);	
+						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'post','',$slr['post']);	
 	echo 			'</th>
 				</tr>';
 	echo 		'<tr>';
 	echo 			'<th>'.$slr['bank'].':'.$slr['bank_acc_number'].'</th>';
 	
 	echo 	'<th>Bill:';
-	echo 				'<input 
+	echo 				'<input readonly
 						style="text-align:left;"
 						type=text 
 						size=20 
@@ -1199,9 +1132,8 @@ function display_salary($link,$slr)
 					<th>ID/AADHAR:'.$slr['staff_id'].'</th>
 				</tr>';
 	echo 		'<tr>';
-	echo 			'<th>PAN:'.$slr['_pan'].'</th>
+	echo 			'<th>PAN:'.$slr['pan'].'</th>
 					<th>QTR:'.$slr['quarter'].'</th>
-					<th>Pay of '.$slr['basic_catagory'].'</th>
 				</tr>';				
 	echo 	'</table>';
 	
@@ -1210,34 +1142,23 @@ function display_salary($link,$slr)
 	
 	echo '<table align=center class=border><tr><td style=" vertical-align: top;"  colspan=2><table class=border>';
 	
-	$exclude=array('fullname','department','_post','bank','bank_acc_number','bill_number',
+	$exclude=array('fullname','department','post','bank','bank_acc_number','bill_number',
 						'budget_head','gpf_acc','cpf_acc','staff_id','remark',
-						'staff_position_id','_pan','quarter','basic_catagory');
+						'staff_position_id','pan','quarter');
 
 	$plus=0;
 	$minus=0;
+
 	
 	foreach ($slr as $key=>$value)
 	{
 		if(!in_array($key,$exclude))
-		{
-			if($key[0]=='p')
-			{
-				$display=substr($key,1);
-				$plus=$plus+$value;
-			}
-			elseif($key[0]=='m')
-			{
-				$display=substr($key,1);
-				$minus=$minus+$value;
-			}
-			else
-			{
-				$display=$key;
-			}
+		{		
 			
-			if($key=='mitax'){echo '</table></td><td colspan=2><table class=border>';}
-			echo 		'<tr><td><b>'.$display.'</b></td><td>
+			if(isset($sh[$key])){$nm=$sh[$key]['ooe'];}else{$nm='';}
+			
+			if($key=='9510(-)'){echo '</table></td><td colspan=2 style=" vertical-align: top;"><table class=border  >';}
+			echo 		'<tr><td><b>'.$nm.' '.$key.'</b></td><td>
 			<input 
 				style="text-align:right;"
 				type=text 
@@ -1247,6 +1168,9 @@ function display_salary($link,$slr)
 				onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_number'].'\',this)" 
 			>
 			</td></tr>';
+			
+			if(substr($key,-3)=='(+)'){$plus=$plus+$value;}
+			elseif(substr($key,-3)=='(-)'){$minus=$minus+$value;}
 		}
 	}	
 	echo '</table></td></tr><tr><td>';

@@ -46,7 +46,7 @@ function read_bill_number_to_copy($link)
 	echo '</tr><tr><th>Copy to bill number</th><td>';
 	echo '<input type=text name=to_bill_number placeholder="YYMMNN">';
 	echo '</td></tr><tr><td  align=center colspan=2>';
-	echo '<input type=submit name=submit onclick="return confirm(\'New Bill will have all salary like old bill\')">';
+	echo '<input type=submit name=submit value=copy_bill onclick="return confirm(\'New Bill will have all salary like old bill\')">';
 	echo '</td></tr><tr><td colspan=2>';
 	echo 'Example: Bill Number for Jan-2017 for bill 4 may be  20170104<br>';
 	echo 'Example: Bill Number for Jan-2017 for bill 5 may be  20170105<br>';
@@ -104,9 +104,21 @@ menu();
 
 if(isset($_POST['submit']))
 {
-	if(isset($_POST['from_bill_number'])&&isset($_POST['to_bill_number']))
+	if($_POST['submit']=='copy_bill' && isset($_POST['from_bill_number'])&& isset($_POST['to_bill_number']))
 	{
 		copy_bill($link,$_POST['from_bill_number'],$_POST['to_bill_number']);
+		list_bill($link,$_POST['to_bill_number']);
+	}
+	
+	if($_POST['submit']=='edit' ||$_POST['submit']=='refresh')
+	{
+		edit_salary($link,$_POST['staff_id'],$_POST['bill_number']);
+		list_bill($link,$_POST['bill_number']);
+	}
+	elseif($_POST['submit']=='delete')
+	{
+		delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_number',$_POST['bill_number']);
+		list_bill($link,$_POST['bill_number']);
 	}
 
 }
