@@ -44,7 +44,7 @@ table{
 $link=connect();
 menu();
 //list_all_salary($link,$_POST['staff_id']);
-new_salary($link,$_POST['staff_id'],$_POST['bill_number']);
+new_salary($link,$_POST['staff_id'],$_POST['bill_group']);
 
 ?>
 

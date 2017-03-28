@@ -35,7 +35,7 @@ function make_post_string(id,idd,t)
 {
 	k=t.id;
 	v=encodeURIComponent(t.value);					//to encode almost everything
-	post=\'field=\'+k+\'&value=\'+v+\'&staff_id=\'+id+\'&bill_number=\'+idd;
+	post=\'field=\'+k+\'&value=\'+v+\'&staff_id=\'+id+\'&bill_group=\'+idd;
 	return post;							
 }
 

@@ -2,7 +2,7 @@
 session_start();
 require_once 'common.php';
 
-//print_r($_POST);
+//echo '<pre>';print_r($_POST);echo '</pre>';
 //////////////
 // Every body who can login and belong to same department can edit it
 //////////////
@@ -37,7 +37,7 @@ table{
 }
 </style>';		
 
-function read_bill_number_to_copy($link)
+function read_bill_group_to_copy($link)
 {
 	echo '<form method=post>';
 	echo '<table class=border style="background-color:lightgreen;">';
@@ -45,33 +45,34 @@ function read_bill_number_to_copy($link)
 	echo '<tr><th>Selected staff</th><td>';
 	echo $_POST['staff_id'].'<td></tr>';
 	
-	echo '<tr><th>Selected Bill Number</th><td>';
-	echo $_POST['bill_number'];
+	echo '<tr><th>Selected Bill Group</th><td>';
+	echo $_POST['bill_group'];
 	
 	echo '</td><tr><th>Period From:</th><td>';
-	echo $_POST['bill_number'];
+	echo '<input type=text class=datepicker id=from_date name=from_date>';
 
 	echo '</td><tr><th>Period To:</th><td>';
-	echo $_POST['bill_number'];
+	echo '<input type=text class=datepicker id=to_date name=to_date>';
 
 	echo '</td><tr><th>Bill Type:</th><td>';
-	echo $_POST['bill_number'];
+	mk_select_from_table($link,'bill_type','','');
 
-	echo '</td><tr><th>Extra Remarks:</th><td>';
-	echo $_POST['bill_number'];
+	echo '</td><tr><th>Remark:</th><td>';
+	echo '<input type=text name=remark >';
 	
 	echo '</td><tr><th>Head</th><td>';
-	echo $_POST['bill_number'];
+	echo '<input type=text name=budget_head >';
+
 	
 	
 
 	
-	echo '<input type= hidden name=bill_number value=\''.$_POST['bill_number'].'\'>';
+	echo '<input type= hidden name=bill_group value=\''.$_POST['bill_group'].'\'>';
 	echo '<input type= hidden name=staff_id value=\''.$_POST['staff_id'].'\'>';
 	echo '<input type= hidden name=bill_vs_staff value=\''.$_POST['bill_vs_staff'].'\'>';
 
-	echo '</tr><tr><th>Copy to bill number</th><td>';
-	echo '<input type=text name=to_bill_number placeholder="YYMMNN">';
+	echo '</tr><tr><th>Copy to bill group</th><td>';
+	echo '<input type=text name=to_bill_group placeholder="YYMMNN">';
 	
 	echo '</td></tr><tr><td  align=center colspan=2>';
 	echo '<input type=submit name=submit value=copy_salary onclick="return confirm(\'Salary will be copied to new bill\')">';
@@ -89,24 +90,26 @@ $link=connect();
 
 menu();
 
-if(isset($_POST['submit']) && isset($_POST['bill_number'])&&isset($_POST['staff_id']))
+if(isset($_POST['submit']) && isset($_POST['bill_group'])&&isset($_POST['staff_id']))
 {
-	if($_POST['submit']=='copy_salary') //from read_bill_number_to_copy
+	if($_POST['submit']=='copy_salary') //from read_bill_group_to_copy
 	{
-		copy_salary($link,$_POST['staff_id'],$_POST['staff_id'],$_POST['bill_number'],$_POST['to_bill_number']);
+		$_POST['from_date']=india_to_mysql_date($_POST['from_date']);
+		$_POST['to_date']=india_to_mysql_date($_POST['to_date']);
+		copy_salary($link,$_POST['staff_id'],$_POST['staff_id'],$_POST['bill_group'],$_POST['to_bill_group'],$_POST);
 	}
 
 	if($_POST['submit']=='copy') //from main edc menu
 	{
-		read_bill_number_to_copy($link);
+		read_bill_group_to_copy($link);
 	}		
 	if($_POST['submit']=='edit' ||$_POST['submit']=='refresh')
 	{
-		edit_salary($link,$_POST['staff_id'],$_POST['bill_number']);
+		edit_salary($link,$_POST['staff_id'],$_POST['bill_group']);
 	}
 	elseif($_POST['submit']=='delete')
 	{
-		delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_number',$_POST['bill_number']);
+		delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_group',$_POST['bill_group']);
 	}	
 }
 
@@ -118,7 +121,7 @@ if(isset($_POST['bill_vs_staff']))
 	}
 	elseif($_POST['bill_vs_staff']=='bill')
 	{
-		list_bill($link,$_POST['bill_number']);
+		list_bill($link,$_POST['bill_group']);
 	}
 }
 

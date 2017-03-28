@@ -839,93 +839,93 @@ echo '</select>';
 }
 
 
-function manage_single_salary($link,$staff_id,$bill_number)
+function manage_single_salary($link,$staff_id,$bill_group)
 {
 	$slr=get_raw($link,'select * from salary
 						where 
 							salary.staff_id=\''.$staff_id.'\' 
-							and  salary.bill_number=\''.$bill_number.'\' 
+							and  salary.bill_group=\''.$bill_group.'\' 
 							');
 
 	if($slr===FALSE)
 	{
-			insert_id_tpc($link,'salary','staff_id',$staff_id,'bill_number',$bill_number);
+			insert_id_tpc($link,'salary','staff_id',$staff_id,'bill_group',$bill_group);
 		
 			$staff_detail=get_raw($link,'select * from staff where staff_id=\''.$staff_id.'\'');
 			//print_r($staff_detail);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'fullname',$staff_detail['fullname']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'department',$staff_detail['department']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'post',$staff_detail['post']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'gpf_acc',$staff_detail['gpf_acc']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'cpf_acc',$staff_detail['cpf_acc']);											
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'bank',$staff_detail['bank']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'bank_acc_number',$staff_detail['bank_acc_number']);
 																																				
 		$slr=get_raw($link,'select * from salary
 							where 
 								salary.staff_id=\''.$staff_id.'\' 
-								and  salary.bill_number=\''.$bill_number.'\' 
+								and  salary.bill_group=\''.$bill_group.'\' 
 								');
 	}
 	edit_salary($link,$slr);
 }			
 
 
-function new_salary($link,$staff_id,$bill_number)
+function new_salary($link,$staff_id,$bill_group)
 {
-	if($staff_id==0 || $bill_number==0){echo '<h5>Bill number can not be zero</h5>';return false;}
+	if($staff_id==0 || $bill_group==0){echo '<h5>Bill number can not be zero</h5>';return false;}
 	$slr=get_raw($link,'select * from salary
 						where 
 							salary.staff_id=\''.$staff_id.'\' 
-							and  salary.bill_number=\''.$bill_number.'\' 
+							and  salary.bill_group=\''.$bill_group.'\' 
 							');
 
 	if($slr===FALSE)
 	{
-			insert_id_tpc($link,'salary','staff_id',$staff_id,'bill_number',$bill_number);
+			insert_id_tpc($link,'salary','staff_id',$staff_id,'bill_group',$bill_group);
 		
 			$staff_detail=get_raw($link,'select * from staff where staff_id=\''.$staff_id.'\'');
 			//print_r($staff_detail);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'fullname',$staff_detail['fullname']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'department',$staff_detail['department']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'post',$staff_detail['post']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'gpf_acc',$staff_detail['gpf_acc']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'cpf_acc',$staff_detail['cpf_acc']);											
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'bank',$staff_detail['bank']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'bank_acc_number',$staff_detail['bank_acc_number']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'pan',$staff_detail['pan']);
 			update_or_insert_field_by_id_tpc($link,'salary',
-												'staff_id',$staff_id,'bill_number',$bill_number,
+												'staff_id',$staff_id,'bill_group',$bill_group,
 												'quarter',$staff_detail['quarter']);
 
 																																																																											
@@ -933,7 +933,7 @@ function new_salary($link,$staff_id,$bill_number)
 		$slr=get_raw($link,'select * from salary
 							where 
 								salary.staff_id=\''.$staff_id.'\' 
-								and  salary.bill_number=\''.$bill_number.'\' 
+								and  salary.bill_group=\''.$bill_group.'\' 
 								');
 			display_salary($link,$slr);
 	}
@@ -945,7 +945,7 @@ function new_salary($link,$staff_id,$bill_number)
 		}
 		else
 		{
-			echo '<h5>staff_id and bill_number combination exist. Can not create salary</h5>';
+			echo '<h5>staff_id and bill_group combination exist. Can not create salary</h5>';
 		}
 	}
 	
@@ -955,7 +955,7 @@ function new_salary($link,$staff_id,$bill_number)
 
 function list_all_salary($link,$staff_id)
 {
-	$sql='select * from salary where staff_id=\''.$staff_id.'\'';
+	$sql='select * from salary where staff_id=\''.$staff_id.'\' order by bill_group desc';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'none\';">Hide</button>';
 	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'block\';">Show</button>';
@@ -978,14 +978,14 @@ function list_all_salary($link,$staff_id)
 		<button type=submit name=submit value=copy formaction=copy_salary.php>C</button></td></tr></table>
 
 		<input type=hidden name=staff_id value=\''.$result_array['staff_id'].'\'>
-		<input type=hidden name=bill_number value=\''.$result_array['bill_number'].'\'>
+		<input type=hidden name=bill_group value=\''.$result_array['bill_group'].'\'>
 		<input type=hidden name=bill_vs_staff value=staff>
 	</form></td>';
 		
 		/*echo '<td><form method=post>
 				<input type=submit value=edit>
 				<input type=hidden name=staff_id value=\''.$result_array['staff_id'].'\'>
-				<input type=hidden name=bill_number value=\''.$result_array['bill_number'].'\'>
+				<input type=hidden name=bill_group value=\''.$result_array['bill_group'].'\'>
 			</form></td>';		*/
 		foreach($result_array as $value)
 		{
@@ -1011,9 +1011,9 @@ function display_salary_header($link)
 	echo '</tr>';
 }
 
-function list_bill($link,$bill_number)
+function list_bill($link,$bill_group)
 {
-	$sql='select * from salary where bill_number=\''.$bill_number.'\'';
+	$sql='select * from salary where bill_group=\''.$bill_group.'\' order by bill_number';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'none\';">Hide</button>';
 	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'none\';">Hide</button>';
@@ -1033,7 +1033,7 @@ function list_bill($link,$bill_number)
 				<button type=submit name=submit value=copy formaction=copy_salary.php>C</button></td></tr></table>
 
 				<input type=hidden name=staff_id value=\''.$result_array['staff_id'].'\'>
-				<input type=hidden name=bill_number value=\''.$result_array['bill_number'].'\'>
+				<input type=hidden name=bill_group value=\''.$result_array['bill_group'].'\'>
 				<input type=hidden name=bill_vs_staff value=bill>
 
 			</form></td>';		
@@ -1047,12 +1047,12 @@ function list_bill($link,$bill_number)
 	echo '</table>';
 }
 
-function edit_salary($link,$staff_id,$bill_number)
+function edit_salary($link,$staff_id,$bill_group)
 {
 	$slr=get_raw($link,'select * from salary
 							where 
 								salary.staff_id=\''.$_POST['staff_id'].'\' 
-								and  salary.bill_number=\''.$_POST['bill_number'].'\' 
+								and  salary.bill_group=\''.$_POST['bill_group'].'\' 
 								');				
 	display_salary($link,$slr);
 }
@@ -1080,14 +1080,7 @@ function display_salary($link,$slr)
 	echo 	'<table class=border align=center style="horizontal-align:center;">
 				<tr>
 					<th colspan=6>Government Medical college Surat,';
-	echo 						'<input placeholder=remark
-									style="text-align:left;"
-									type=text 
-									size=20 
-									id=remark
-									value=\''.$slr['remark'].'\' 
-									onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_number'].'\',this)" 
-								>';
+
 	
 	echo 			'</th>';
 	echo '		</tr>
@@ -1095,37 +1088,39 @@ function display_salary($link,$slr)
 	echo 			'<th>'.$slr['fullname'].'
 					</th>
 					<th>';
-						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'department','',$slr['department']);
+						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_group'],$link,'department','',$slr['department']);
 	echo 			'</th>
 					<th>';
-						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_number'],$link,'post','',$slr['post']);	
+						mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_group'],$link,'post','',$slr['post']);	
 	echo 			'</th>
 				</tr>';
 	echo 		'<tr>';
 	echo 			'<th>'.$slr['bank'].':'.$slr['bank_acc_number'].'</th>';
 	
-	echo 	'<th>Bill:';
+	echo 	'<th>Bill Group:';
 	echo 				'<input readonly
 						style="text-align:left;"
 						type=text 
-						size=20 
-						id=bill_number
-						value=\''.$slr['bill_number'].'\' 
-						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_number'].'\',this)" 
+						size=10 
+						id=bill_group
+						value=\''.$slr['bill_group'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
 					>';
 	echo	'</th>';
-	
-	echo	'<th>Head:';
+
+	echo 	'<th>Bill number:';
 	echo 				'<input 
 						style="text-align:left;"
 						type=text 
-						size=20 
-						id=budget_head
-						value=\''.$slr['budget_head'].'\' 
-						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_number'].'\',this)" 
-					>';
-	echo 			'</th>
-				</tr>';
+						size=10 
+						id=bill_number
+						value=\''.$slr['bill_number'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';	
+	echo	'</th>';
+	
+	
+	echo 		'	</tr>';
 	echo 		'<tr>';
 	echo 			'<th>GPF:'.$slr['gpf_acc'].'</th>
 					<th>CPF:'.$slr['cpf_acc'].'</th>
@@ -1133,18 +1128,53 @@ function display_salary($link,$slr)
 				</tr>';
 	echo 		'<tr>';
 	echo 			'<th>PAN:'.$slr['pan'].'</th>
-					<th>QTR:'.$slr['quarter'].'</th>
-				</tr>';				
+					<th>QTR:'.$slr['quarter'].'</th>';			
+	echo			'<th>Head:';
+	echo 				'<input 
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=budget_head
+						value=\''.$slr['budget_head'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';
+	echo 			'</th>';
+	echo 		'<tr>';
+	echo 			'<th>From Date:<input type=text size=10 
+							class=datepicker 
+							id=from_date name=from_date 
+							onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this);"
+							value=\''.mysql_to_india_date($slr['from_date']).'\'></th>
+
+					<th>To Date:<input type=text size=10 
+							class=datepicker 
+							id=to_date name=to_date  
+							onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this);"
+							value=\''.mysql_to_india_date($slr['to_date']).'\'></th>
+					<th>Bill Type:';
+					mk_select_from_table_ajax_dpc($slr['staff_id'],$slr['bill_group'],$link,'bill_type','',$slr['bill_type']);	
+	echo			'</th></tr>';
+	echo 						'<tr><th>Remark</th><th colspan=2 ><input placeholder=remark
+									style="text-align:left;"
+									type=text 
+									size=50 
+									id=remark
+									value=\''.$slr['remark'].'\' 
+									onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+								></th>';
+	echo			'</tr>';	
+	
+	echo 		'</tr>';				
 	echo 	'</table>';
 	
 	//echo '<input type=hidden name=staff_id value=\''.$slr['staff_id'].'\'>';
-	//echo '<input type=hidden name=bill_number value=\''.$slr['bill_number'].'\'>';
+	//echo '<input type=hidden name=bill_group value=\''.$slr['bill_group'].'\'>';
 	
 	echo '<table align=center class=border><tr><td style=" vertical-align: top;"  colspan=2><table class=border>';
 	
-	$exclude=array('fullname','department','post','bank','bank_acc_number','bill_number',
+	$exclude=array('fullname','department','post','bank','bank_acc_number','bill_group',
 						'budget_head','gpf_acc','cpf_acc','staff_id','remark',
-						'staff_position_id','pan','quarter');
+						'staff_position_id','pan','quarter','bill_number','from_date','to_date','bill_type');
 
 	$plus=0;
 	$minus=0;
@@ -1157,7 +1187,7 @@ function display_salary($link,$slr)
 			
 			if(isset($sh[$key])){$nm=$sh[$key]['ooe'];}else{$nm='';}
 			
-			if($key=='9510(-)'){echo '</table></td><td colspan=2 style=" vertical-align: top;"><table class=border  >';}
+			if($key=='Income_Tax_9510(-)'){echo '</table></td><td colspan=2 style=" vertical-align: top;"><table class=border  >';}
 			echo 		'<tr><td><b>'.$nm.' '.$key.'</b></td><td>
 			<input 
 				style="text-align:right;"
@@ -1165,7 +1195,7 @@ function display_salary($link,$slr)
 				size=10 
 				id=\''.$key.'\'
 				value=\''.$value.'\' 
-				onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_number'].'\',this)" 
+				onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
 			>
 			</td></tr>';
 			
@@ -1181,7 +1211,7 @@ function display_salary($link,$slr)
 	echo '<form method=post>
 		<input type=submit name=submit value=refresh>
 		<input type=hidden name=staff_id value=\''.$_POST['staff_id'].'\'>
-		<input type=hidden name=bill_number value=\''.$_POST['bill_number'].'\'>';
+		<input type=hidden name=bill_group value=\''.$_POST['bill_group'].'\'>';
 	echo '</form>';
 
 	echo '</td><td>Net</td><td  style="text-align:right;" >'.($plus-$minus).'</td></tr>';
@@ -1191,23 +1221,24 @@ function display_salary($link,$slr)
 	
 }
 
-function select_bill_number($link)
+function select_bill_group($link)
 {
-	$sql='select distinct bill_number from salary order by bill_number desc';
+	$sql='select distinct bill_group from salary order by bill_group desc';
 	echo '<table class=border style="background-color:lightgreen;"><tr><th>Select Bill Number</th><td>';
 	echo '<form method=post>';
-	mk_select_from_sql($link,$sql,'bill_number','bill_number','','');
+	mk_select_from_sql($link,$sql,'bill_group','bill_group','','');
 	echo '<input type=submit name=submit value=show>';
 	echo '</form></td></tr></table>';
 }
 
 
-function copy_salary($link,$from_staff,$to_staff,$from_bn,$to_bn)
+function copy_salary($link,$from_staff,$to_staff,$from_bn,$to_bn,$ar)
 {
+	//print_r($ar);
 	//incomplate
 	$sql='select * from salary where 
 			staff_id=\''.$from_staff.'\' and
-			bill_number=\''.$from_bn.'\'';
+			bill_group=\''.$from_bn.'\'';
 	//echo $sql;
 
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
@@ -1216,17 +1247,24 @@ function copy_salary($link,$from_staff,$to_staff,$from_bn,$to_bn)
 	{
 		$f='';
 		$v='';
+		
 		foreach($ra as $key=>$value)
 		{
+			//echo $key.'<br>';
+
 			$f=$f.' `'.$key.'`,';
 			
-			if($key=='bill_number')
+			if($key=='bill_group')
 			{
 				$v=$v.' \''.$to_bn.'\',';
 			}
 			elseif($key=='staff_id')
 			{
 					$v=$v.' \''.$to_staff.'\',';
+			}
+			elseif(array_key_exists($key,$ar))
+			{
+				$v=$v.' \''.$ar[$key].'\',';
 			}
 			else
 			{

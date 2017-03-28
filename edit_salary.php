@@ -46,17 +46,17 @@ $link=connect();
 menu();
 
 
-	if(	isset($_POST['bill_number']) && 
+	if(	isset($_POST['bill_group']) && 
 	isset($_POST['staff_id']) &&
 	isset($_POST['submit']))
 	{
 		if($_POST['submit']=='edit' ||$_POST['submit']=='refresh')
 		{
-			edit_salary($link,$_POST['staff_id'],$_POST['bill_number']);
+			edit_salary($link,$_POST['staff_id'],$_POST['bill_group']);
 		}
 		elseif($_POST['submit']=='delete')
 		{
-			delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_number',$_POST['bill_number']);
+			delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_group',$_POST['bill_group']);
 		}
 		
 	}

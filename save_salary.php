@@ -13,15 +13,20 @@ $link=connect();
 //date india vs mysql. Corusponding change in edit_dc.php
 
 
+if($_POST['field']=='from_date' ||$_POST['field']=='to_date' )
+{
+	$_POST['value']=india_to_mysql_date($_POST['value']);
+}
+
 
 echo '<div style="display:block;background:lightblue;width:700px;" id=spn>';
 //print_r($_POST);
-$updated=update_or_insert_field_by_id_tpc($link,'salary','staff_id',$_POST['staff_id'],'bill_number',$_POST['bill_number'],$_POST['field'],
+$updated=update_or_insert_field_by_id_tpc($link,'salary','staff_id',$_POST['staff_id'],'bill_group',$_POST['bill_group'],$_POST['field'],
 								mysqli_real_escape_string($link,$_POST['value'])	
 							);
 if($updated>0)
 {
-	echo '<span style="background:blue;color:red;">[X]</span><span style="color:red;">Last Saved:</span>'.$_POST['staff_id'].'=>'.$_POST['bill_number'].'=>'.$_POST['field'].'=>'.$_POST['value'];
+	echo '<span style="background:blue;color:red;">[X]</span><span style="color:red;">Last Saved:</span>'.$_POST['staff_id'].'=>'.$_POST['bill_group'].'=>'.$_POST['field'].'=>'.$_POST['value'];
 }
 else
 {

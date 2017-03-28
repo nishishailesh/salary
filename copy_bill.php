@@ -36,15 +36,15 @@ table{
 	background-color:gray;
 }
 </style>';		
-
-function read_bill_number_to_copy($link)
+/*
+function read_bill_group_to_copy($link)
 {
 	echo '<form method=post>';
-	$sql='select distinct bill_number from salary order by bill_number desc';
+	$sql='select distinct bill_group from salary order by bill_group desc';
 	echo '<table class=border style="background-color:lightgreen;"><tr><th>Select Bill Number</th><td>';
-	mk_select_from_sql($link,$sql,'bill_number','from_bill_number','','');
+	mk_select_from_sql($link,$sql,'bill_group','from_bill_group','','');
 	echo '</tr><tr><th>Copy to bill number</th><td>';
-	echo '<input type=text name=to_bill_number placeholder="YYMMNN">';
+	echo '<input type=text name=to_bill_group placeholder="YYMMNN">';
 	echo '</td></tr><tr><td  align=center colspan=2>';
 	echo '<input type=submit name=submit value=copy_bill onclick="return confirm(\'New Bill will have all salary like old bill\')">';
 	echo '</td></tr><tr><td colspan=2>';
@@ -55,10 +55,52 @@ function read_bill_number_to_copy($link)
 	echo 'Make sure that bill number give some idea about what it is<br>';
 	echo '</td></tr></table>';	
 }
+*/
 
-function copy_bill($link,$from_bn,$to_bn)
+
+function read_bill_group_to_copy($link)
 {
-	$sql='select * from salary where bill_number=\''.$from_bn.'\'';
+	echo '<form method=post>';
+	echo '<table class=border style="background-color:lightgreen;">';
+	
+	//echo '<tr><th>Selected staff</th><td>';
+	//echo $_POST['staff_id'].'<td></tr>';
+
+	$sql='select distinct bill_group from salary order by bill_group desc';
+	echo '<table class=border style="background-color:lightgreen;"><tr><th>Select Bill Number</th><td>';
+	mk_select_from_sql($link,$sql,'bill_group','from_bill_group','','');
+		
+	//echo '<tr><th>Selected Bill Group</th><td>';
+	//echo $_POST['bill_group'];
+	
+	echo '</td><tr><th>Period From:</th><td>';
+	echo '<input type=text class=datepicker id=from_date name=from_date>';
+
+	echo '</td><tr><th>Period To:</th><td>';
+	echo '<input type=text class=datepicker id=to_date name=to_date>';
+
+	echo '</td><tr><th>Bill Type:</th><td>';
+	mk_select_from_table($link,'bill_type','','');
+
+	echo '</td><tr><th>Remark:</th><td>';
+	echo '<input type=text name=remark >';
+	
+	echo '</td><tr><th>Head</th><td>';
+	echo '<input type=text name=budget_head >';
+
+	echo '</tr><tr><th>Copy to bill group</th><td>';
+	echo '<input type=text name=to_bill_group placeholder="YYMMNN">';
+	
+	echo '</td></tr><tr><td  align=center colspan=2>';
+	echo '<input type=submit name=submit value=copy_bill onclick="return confirm(\'Salary will be copied to new bill\')">';
+	echo '</td></tr><tr><td colspan=2>';
+	
+	echo '</td></tr></table></form>';	
+}
+
+function copy_bill($link,$from_bn,$to_bn,$ar)
+{
+	$sql='select * from salary where bill_group=\''.$from_bn.'\'';
 	//echo $sql;
 
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
@@ -70,10 +112,14 @@ function copy_bill($link,$from_bn,$to_bn)
 		foreach($ra as $key=>$value)
 		{
 			$f=$f.' `'.$key.'`,';
-			if($key=='bill_number')
+			if($key=='bill_group')
 			{
 				$v=$v.' \''.$to_bn.'\',';
 			}
+			elseif(array_key_exists($key,$ar))
+			{
+				$v=$v.' \''.$ar[$key].'\',';
+			}			
 			else
 			{
 				$v=$v.' \''.$value.'\',';
@@ -104,27 +150,29 @@ menu();
 
 if(isset($_POST['submit']))
 {
-	if($_POST['submit']=='copy_bill' && isset($_POST['from_bill_number'])&& isset($_POST['to_bill_number']))
+	if($_POST['submit']=='copy_bill' && isset($_POST['from_bill_group'])&& isset($_POST['to_bill_group']))
 	{
-		copy_bill($link,$_POST['from_bill_number'],$_POST['to_bill_number']);
-		list_bill($link,$_POST['to_bill_number']);
+		$_POST['from_date']=india_to_mysql_date($_POST['from_date']);
+		$_POST['to_date']=india_to_mysql_date($_POST['to_date']);		
+		copy_bill($link,$_POST['from_bill_group'],$_POST['to_bill_group'],$_POST);
+		list_bill($link,$_POST['to_bill_group']);
 	}
 	
 	if($_POST['submit']=='edit' ||$_POST['submit']=='refresh')
 	{
-		edit_salary($link,$_POST['staff_id'],$_POST['bill_number']);
-		list_bill($link,$_POST['bill_number']);
+		edit_salary($link,$_POST['staff_id'],$_POST['bill_group']);
+		list_bill($link,$_POST['bill_group']);
 	}
 	elseif($_POST['submit']=='delete')
 	{
-		delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_number',$_POST['bill_number']);
-		list_bill($link,$_POST['bill_number']);
+		delete_raw_by_id_dpc($link,'salary','staff_id',$_POST['staff_id'],'bill_group',$_POST['bill_group']);
+		list_bill($link,$_POST['bill_group']);
 	}
 
 }
 else
 {
-	read_bill_number_to_copy($link);
+	read_bill_group_to_copy($link);
 }
 ?>
 

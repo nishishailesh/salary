@@ -35,7 +35,7 @@ function make_post_string(id,idd,t)
 {
 	k=encodeURIComponent(t.id);					//to encode almost everything
 	v=encodeURIComponent(t.value);					//to encode almost everything
-	post=\'field=\'+k+\'&value=\'+v+\'&staff_id=\'+id+\'&bill_number=\'+idd;
+	post=\'field=\'+k+\'&value=\'+v+\'&staff_id=\'+id+\'&bill_group=\'+idd;
 	return post;							
 }
 
@@ -77,5 +77,7 @@ function read_bn()
 <script type="text/javascript" src="date/datepicker.js"></script>
 <link rel="stylesheet" type="text/css" href="date/datepicker.css" /> 
 ';
+
+
 
 ?>

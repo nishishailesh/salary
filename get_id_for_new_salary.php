@@ -42,7 +42,7 @@ echo	'<tr>';
 echo 		'<td>Staff ID:</td><td>';
 get_staff_id($link);
 echo '</td></tr>';
-echo '<tr><td>Bill number</td><td><input type=text name=bill_number></td></tr>';
+echo '<tr><td>Bill group</td><td><input type=text name=bill_group></td></tr>';
 echo	'<tr>';
 echo 		'<th colspan="2"><input type=submit name=action value=new_salary></th>';
 echo 	'</tr>';
