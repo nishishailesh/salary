@@ -825,15 +825,14 @@ function export_to_csv($sql,$link)
 
 function get_staff_id($link)
 {
-$sql='select staff_id,fullname,department,post from staff
-order by department,post';
+$sql='select staff_id,fullname,uid from staff
+order by fullname';
 
 if(!$result=mysqli_query($link,$sql)){echo mysqli_error($link);return FALSE;}
 echo '<select name=staff_id>';
 while($ar=mysqli_fetch_assoc($result))
 {
-echo '<option value=\''.$ar['staff_id'].'\'>'.''.$ar['department'].'-'.$ar['post'].'-'.
-$ar['fullname'].'-'.$ar['staff_id'].'</option>';
+echo '<option value=\''.$ar['staff_id'].'\'>'.$ar['fullname'].'-'.$ar['staff_id'].'-'.$ar['uid'].'</option>';
 }
 echo '</select>';
 }
@@ -1015,12 +1014,13 @@ function list_bill($link,$bill_group)
 {
 	$sql='select * from salary where bill_group=\''.$bill_group.'\' order by bill_number';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'none\';">Hide</button>';
-	//echo '<button onclick="document.getElementById(\'all_salary\').style.display = \'none\';">Hide</button>';
+	echo '<form method=post action=outer_1.php target=_blank>
+				<input type=hidden name=bill_group value=\''.$bill_group.'\'>
+				<button>Print</button>
+		</form>';
+		
 	echo '<button type=button onclick="showhide(\'all_salary\')">Show/Hide</button>';
-	//echo '<input type=image src="showhide.png" title="click to show/hide list below"
-	//	style="border: 2px blue dashed;border-radius:10px;padding: 5px;" width="20" height="20" 
-	//	onclick="showhide(\'all_salary\')">';
+
 	echo '<table class=border id=all_salary>';
 	display_salary_header($link);
 	while($result_array=mysqli_fetch_assoc($result))

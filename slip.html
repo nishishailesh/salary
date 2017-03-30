@@ -1,8 +1,27 @@
+[blk1.#]
  <table border=1>
 	<tr><th colspan=10><h2>GMC Surat</h2></th></tr>
 	<tr><th colspan=10><h2 style="text-align:center">[onshow.data.fullname]</h2></th></tr>
-	<tr>
-		<th>Salary of [onshow.data.pan]</th>
-		<td>[onshow.data.remark]</td>
-	</tr>
+	<tr><th>Salary of [onshow.data.fullname]</th><td>[onshow.data.remark]</td>	</tr>
+	<tr><td>[blk1.#]</td><td>[blk1.key;block=tr]</td><td>[blk1.val]</td></tr>
  </table>
+ 
+======[onshow.data.fullname]==========
+
+ <table border=1>
+	<tr><th colspan=10><h2>GMC Surat</h2></th></tr>
+	<tr><td>[blk2.#]</td><td>[blk2.fullname;block=tr]</td><td>[blk2.department;block=tr]</td><td>[blk2.post;block=tr]</td></tr>
+	<tr><td>[blk2;block=tr;nodata]Nil</td></tr>
+ </table>
+
+ <table border=1>
+	<tr><th colspan=10><h2>GMC Surat</h2></th></tr>
+	<tr><td>[blk3.#]</td><td>[blk3.fullname;block=tr]</td><td>[blk3.department;block=tr]</td><td>[blk3.post;block=tr]</td></tr>
+	fgdfgdf
+	dfgdfg
+	<tr><td>[blk3.#]</td><td>[blk3.pan;block=tr]</td><td>[blk3.department;block=tr]</td><td>[blk3.post;block=tr]</td></tr>
+	<tr><td>[blk3.#]</td><td>[blk3.fullname;block=tr]</td><td>[blk3.department;block=tr]</td><td>[blk3.post;block=tr]</td></tr>
+
+ </table>
+
+

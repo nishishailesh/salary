@@ -2,7 +2,7 @@
 session_start();
 require_once 'common.php';
 
-//print_r($_POST);
+print_r($_POST);
 //////////////
 // Every body who can login and belong to same department can edit it
 //////////////
