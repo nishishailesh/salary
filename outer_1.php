@@ -623,7 +623,7 @@ function outer_front($pdf,$array_4,$remark)
 									$array_4['Food_Grains_A_5801(-)']-
 									$array_4['Pay_of_Officer_0101(-)'] - 
 									$array_4['Pay_of_Establishment_0102(-)'];
-	write_text($pdf,$gross_total,164,230,20,5);
+	write_text($pdf,$gross_total,164,219,20,5);
 	write_text($pdf,$array_4['net'],164,249,20,5);
 	write_text($pdf,$array_4['net'],164,253,20,5);
 

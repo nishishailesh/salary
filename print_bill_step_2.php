@@ -50,7 +50,7 @@ echo '<tr><td>Bill Group Selected:</td><td><input type=text readonly name=bill_g
 echo '<tr><td>Bill Number Selected:</td><td><input type=text readonly name=bill_number value=\''.$_POST['bill_number'].'\'></td></tr>';
 echo '<tr><th colspan=2>Following reports are available for print</th></tr>';
 echo '<tr><td>Outer</td><td><button type=submit formtarget=_blank name=action value=print_outer formaction=outer_1.php>Print Outer</button></td></tr>';
-echo '<tr><td>Outer Front and Back</td><td><button type=submit formtarget=_blank name=action value=print_fb formaction=outer_2.php>Print Front and Back</button></td></tr>';
+//echo '<tr><td>Outer Front and Back</td><td><button type=submit formtarget=_blank name=action value=print_fb formaction=outer_2.php>Print Front and Back</button></td></tr>';
 echo '<tr><td>Income Tax</td><td><button type=submit formtarget=_blank name=action value=itax formaction=itax.php>Print ITax</button></td></tr>';
 echo '<tr><td>HR</td><td><button type=submit formtarget=_blank name=action value=house_rent formaction=house_rent.php>Print HRent</button></td></tr>';
 echo '<tr><td>PT</td><td><button type=submit formtarget=_blank name=action value=ptax formaction=ptax.php>Print PTax</button></td></tr>';
