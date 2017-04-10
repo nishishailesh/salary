@@ -68,6 +68,9 @@ echo '
 			<tr><td>
 				<button formaction=copy_bill.php type=submit onclick="hidemenu()" name=copy_bill>Copy</button>
 			</td></tr>	
+			<tr><td>
+				<button formaction=print_bill.php type=submit onclick="hidemenu()" name=pb>Print</button>
+			</td></tr>	
 		</table>			
 </td><td>
 		<button  type=button onclick="showhidemenu(\'button3\')">Manage My Account('.$_SESSION['login'].')</button>

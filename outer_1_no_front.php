@@ -18,8 +18,6 @@ $GLOBALS['deductions']='Report on Pay Bill Deductions';
 $GLOBALS['grand']=array();
 
 $array_1=prepare_array_1($link,$_POST['bill_group'],$_POST['bill_number'],$rpp);
-$remark=$array_1[0]['remark'];
-
 $array_2=prepare_array_2($array_1,$rpp);
 $array_3=prepare_array_3($array_2);
 $array_4=prepare_array_4($array_3);
@@ -60,11 +58,8 @@ $pdf->SetFont('dejavusans', '', 9);
 //6.25% for each column
 $pdf->SetMargins(30, 20, 30);
 $pdf->AddPage();
-outer_front($pdf,$array_4,$remark);
-$pdf->AddPage();
-$pdf->SetFont('dejavusans', '', 9);
 $pdf->writeHTML($myStr, true, false, true, false, '');
-$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_outer.pdf', 'I');
+$pdf->Output('example_006.pdf', 'I');
 
 
 function mk_sql($bill_group,$bill_number)
@@ -584,131 +579,498 @@ function echo_a4_minus($n,$d)
 	echo '<td></td>';
 		echo '</tr>';
 }
-
-
-function outer_front($pdf,$array_4,$remark)
+/*
+function print_one_page_plus($a,$page_size,$page_number)
 {
-	$img_file = 'outer_front.jpg';
-	$pdf->Image($img_file, 30, 20, 0, 0, '', '', '', false, 300, '', false, false, 0);
-
-	$EDP0101_P=$array_4['Pay_of_Officer_0101(+)'] + $array_4['Grade_Pay_of_Officer_0101(+)'];
-	write_text($pdf,$EDP0101_P,164,118,20,5);
-	$EDP0102_P=$array_4['Pay_of_Establishment_0102(+)'] + $array_4['Grade_Pay_of_Establishment_0102(+)'];
-	write_text($pdf,$EDP0102_P,164,121.5,20,5);
-	write_text($pdf,$array_4['Leave_Salary_Encash_0109(+)'],164,125,20,5);
-	write_text($pdf,$array_4['Dearness_Allowance_0103(+)'],164,129,20,5);
-	write_text($pdf,$array_4['House_Rent_Allowance_0110(+)'],164,134,20,5);
-	write_text($pdf,$array_4['Compansatory_Local_Allowance_0111(+)'],164,139,20,5);
-	write_text($pdf,$array_4['Interim_Relief_0112(+)'],164,145,20,5);
-	write_text($pdf,$array_4['Transport_Allowance_0113(+)'],164,150,20,5);
-	$EDP0104_P=$array_4['Special_Post_Allow_0104(+)']+$array_4['Family_Welfare_Allow_0104(+)']
-				+$array_4['Ceiling_Extra_0104(+)']+$array_4['BA_0104(+)'];
-	write_text($pdf,$EDP0104_P,164,154,20,5);
-	write_text($pdf,$array_4['Medical_Allowance_0107(+)'],164,158,20,5);
-	write_text($pdf,$array_4['Washing_Allowance_0132(+)'],164,163,20,5);
-	write_text($pdf,$array_4['Uniform_Allowance_0131(+)'],164,168,20,5);
-	write_text($pdf,$array_4['Nursing_Allownace_0129(+)'],164,173,20,5);
-
-	write_text_fill_left($pdf,'0128 NPPA         0128(+)',112,184.5,55,4);
-	write_text($pdf,$array_4['NPA_0128(+)'],164,184.5,20,5);
-	write_text($pdf,$array_4['gross'],164,196,20,5);
-
-	write_text($pdf,$array_4['Festival_A_5701(-)'],164,201,20,5);
-	write_text($pdf,$array_4['Food_Grains_A_5801(-)'],164,205,20,5);
-	$EDP0101_M=$array_4['Pay_of_Officer_0101(-)'] + $array_4['Pay_of_Establishment_0102(-)'];
-	write_text($pdf,$EDP0101_M,164,209,20,5);
-
-	$total=$array_4['gross'];
-	$gross_total=$array_4['gross']-$array_4['Festival_A_5701(-)']-
-									$array_4['Food_Grains_A_5801(-)']-
-									$array_4['Pay_of_Officer_0101(-)'] - 
-									$array_4['Pay_of_Establishment_0102(-)'];
-	write_text($pdf,$gross_total,164,230,20,5);
-	write_text($pdf,$array_4['net'],164,249,20,5);
-	write_text($pdf,$array_4['net'],164,253,20,5);
-
-	write_text($pdf,$array_4['Income_Tax_9510(-)'],239,47,20,5);
-	write_text($pdf,$array_4['GPF_IV_9531(-)'],239,59,20,5);
-	write_text($pdf,$array_4['CPF_9690(-)'],239,65,20,5);
-
-	//write_text_fill_left($pdf,'GPF non Cl-IV   9670(-)',188,76,55,4);
-	write_text($pdf,$array_4['GPF_non_IV_9670(-)'],307,53,20,5);
-	write_text($pdf,$array_4['Rent_of_Building_9560(-)'],239,81,20,5);
-	write_text($pdf,$array_4['Professional_Tax_9570(-)'],239,95,20,5);
-	write_text($pdf,$array_4['SIS_I_9581(-)'],239,108,20,5);
-	write_text($pdf,$array_4['SIS_S_9582(-)'],239,118,20,5);
-	write_text($pdf,$array_4['HBA_9591(-)'],239,178,20,5);
-
-	$total_a_deduction=$array_4['Income_Tax_9510(-)']+
-							$array_4['GPF_IV_9531(-)']+
-							$array_4['CPF_9690(-)']+
-							$array_4['Rent_of_Building_9560(-)']+
-							$array_4['Professional_Tax_9570(-)']+
-							$array_4['SIS_I_9581(-)']+
-							$array_4['SIS_S_9582(-)']+
-							$array_4['HBA_9591(-)'];
-
-	$total_deduction=$total_a_deduction+$array_4['GPF_non_IV_9670(-)'];
-	write_text($pdf,$total_a_deduction,239,201,20,5);
-	write_text($pdf,$total_deduction,307,137,20,5);
-	$net_total=$gross_total-$total_deduction;
-	write_text($pdf,$net_total,307,141.5,20,5);
-
-	//12170501
-	if(round(($_POST['bill_group']/1000000),0)==12)
-	{
-		write_text_big_fill($pdf,'Gazetted',156,39,30,12);
-	}
-	elseif(round(($_POST['bill_group']/1000000),0)==34)
-	{
-		write_text_big_fill($pdf,'Non - Gazetted',156,39,30,12);
-	}
+		$a2=prepare_array_2($a,$page_size);
+		//print_r($a2);
+		$a3=prepare_array_3($a2);
 		
-	write_text($pdf,$_POST['bill_group'].'-'.$_POST['bill_number'],162,51,25,12);
-		write_text_big_fill($pdf,$remark,79,67,35,10);
+		$a4=prepare_array_4($a3);
+		$page=0;
+		$total=count($a);
+		
+		foreach($a as $salary_number=>$salary_details)
+		{			
+			if($salary_number%$page_size==0 && $salary_number!=0)
+			{
+				echo_a3_plus($page,$a3[$page]);
+				echo '</table>';
+				echo '<h2 style="page-break-after: always;"></h2>';
+				$page++;				
+			}
+						
+			if($salary_number%$page_size==0)
+			{				
+				echo '<table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">';
+				echo '<tr >	<th colspan="2">Bill No:'.$a[0]['bill_group'].'('.$a[0]['bill_number'].')</th>
+					<th colspan="12" style="font-size: xx-large;">'.$GLOBALS['college'].'----'.$GLOBALS['allowances'].'</th>
+					<th colspan="2">'.$a[0]['remark'].', Page No. ('.($page+1).')</th>
+					</tr>';
+				$plus_head='<tr>
+					<th width="3%"><b>Sr</b></th>
+					<th width="15%"><b>Emp Name<br>Dept,Post<br>7th Pay, 6th Pay</b></th>
+					<th width="5%"><b>(002)GP<br>Special<br>FP</b></th>
+					<th width="7%"><b>(001)(002)<br>P.Off<br>P.Est</b></th>
+					<th width="5%"><b>(128)<br>NPA</b></th>
+					<th width="5%"><b>(002)<br>LS/LE</b></th>
+					<th width="5%"><b>(005)<br>DA</b></th>
+					<th width="5%"><b>(006)<br>HRA</b></th>
+					<th width="5%"><b>(016)<br>CLA</b></th>
+					<th width="5%"><b>(009)<br>MA</b></th>
+					<th width="5%"><b>(013)<br>TA</b></th>
+					<th width="5%"><b>(104)<br>BA<br>Ceiling</b></th>
+					<th width="5%"><b>(132)WA<br>(131)Uni<br>(129)Nur</b></th>
+					<th width="7%"><b>Gross<br>Amt.</b></th>
+					<th width="5%"><b>For Audit<br>Only</b></th>
+					<th width="5%"><b>(510)ITx<br>(520)Sur</b></th>
+				</tr><tr>
+					<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+				</tr>';
+				echo $plus_head;	
+			}
+			echo_a1_plus($salary_number,$salary_details);
+			if($salary_number==($total-1))
+			{
+				echo_a3_plus($page,$a3[$page]);
+				echo '</table>';
+				echo '<h2 style="page-break-after: always;"></h2>';
+			}	
+		}
 }
 
+*/
+
+/*
 
 
-function write_text($pdf,$text, $x,$y, $w,$h)
+
+function print_array_1($a,$page_size)
 {
-$pdf->SetFont('courier','B',10);
-$pdf->SetXY($x,$y);
-$pdf->SetTextColor(0);
-$pdf->MultiCell($w, $h, $text , $border=0, $align='R', 
-					$fill=false, $ln=1, $x='', $y='', $reseth=true, $stretch=0, 
-					$ishtml=false, $autopadding=true, $maxh=0, $valign='T', $fitcell=false);	
+		$a2=prepare_array_2($a,$page_size);
+		//print_r($a2);
+		$a3=prepare_array_3($a2);
+		
+		$a4=prepare_array_4($a3);
+		$page=0;
+		$total=count($a);
+		
+		foreach($a as $salary_number=>$salary_details)
+		{			
+			if($salary_number%$page_size==0 && $salary_number!=0)
+			{
+				echo_a3_plus($page,$a3[$page]);
+				echo '</table>';
+				echo '<h2 style="page-break-after: always;"></h2>';
+				$page++;				
+			}
+						
+			if($salary_number%$page_size==0)
+			{				
+				echo '<table cellpadding="1" cellspacing="1" border="1" style="text-align:center;">';
+				echo '<tr >	<th colspan="2">Bill No:'.$a[0]['bill_group'].'('.$a[0]['bill_number'].')</th>
+					<th colspan="12" style="font-size: xx-large;">'.$GLOBALS['college'].'----'.$GLOBALS['allowances'].'</th>
+					<th colspan="2">'.$a[0]['remark'].', Page No. ('.($page+1).')</th>
+					</tr>';
+				$plus_head='<tr>
+					<th width="3%"><b>Sr</b></th>
+					<th width="15%"><b>Emp Name<br>Dept,Post<br>7th Pay, 6th Pay</b></th>
+					<th width="5%"><b>(002)GP<br>Special<br>FP</b></th>
+					<th width="7%"><b>(001)(002)<br>P.Off<br>P.Est</b></th>
+					<th width="5%"><b>(128)<br>NPA</b></th>
+					<th width="5%"><b>(002)<br>LS/LE</b></th>
+					<th width="5%"><b>(005)<br>DA</b></th>
+					<th width="5%"><b>(006)<br>HRA</b></th>
+					<th width="5%"><b>(016)<br>CLA</b></th>
+					<th width="5%"><b>(009)<br>MA</b></th>
+					<th width="5%"><b>(013)<br>TA</b></th>
+					<th width="5%"><b>(104)<br>BA<br>Ceiling</b></th>
+					<th width="5%"><b>(132)WA<br>(131)Uni<br>(129)Nur</b></th>
+					<th width="7%"><b>Gross<br>Amt.</b></th>
+					<th width="5%"><b>For Audit<br>Only</b></th>
+					<th width="5%"><b>(510)ITx<br>(520)Sur</b></th>
+				</tr><tr>
+					<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+				</tr>';
+				echo $plus_head;	
+			}
+			echo_a1_plus($salary_number,$salary_details);
+			if($salary_number==($total-1))
+			{
+				echo_a3_plus($page,$a3[$page]);
+				echo '</table>';
+				echo '<h2 style="page-break-after: always;"></h2>';
+			}	
+		}
 }
 
-function write_text_fill_left($pdf,$text, $x,$y, $w,$h)
+
+
+function prepare_array($link,$bill_group,$bill_number,$rpp)
 {
-$pdf->SetFont('courier','B',10);
-$pdf->SetXY($x,$y);
-$pdf->SetTextColor(0);
-$pdf->SetFillColor(255);
-$pdf->SetDrawColor(0);
-
-$pdf->Rect($x, $y,$w,$h,'F');
-$pdf->MultiCell($w, $h, $text , $border=1, $align='L', 
-					$fill=true, $ln=1, $x='', $y='', $reseth=true, $stretch=0, 
-					$ishtml=false, $autopadding=false, $maxh=0, $valign='T', $fitcell=false);	
+	$sql=mk_sql($bill_group,$bill_number);
+	//echo $sql;
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	$tot=mysqli_num_rows($result);
+	//echo $tot;
+	$page=1;
+	$count=0;
+	while($result_array=mysqli_fetch_assoc($result))
+		{	
+			$count++;
+			$final[$page][$count]=$result_array;
+			if($count==$rpp || $count+(($page-1)*$rpp)==$tot)
+			{
+				foreach($final[$page][1] as $key=>$value)
+				{
+					$final[$page][$count+1][$key]=array_sum(array_column($final[$page],$key));
+					$GLOBALS['grand'][$page][$key]=$final[$page][$count+1][$key];
+				}
+				$count=0;$page++;
+			}
+		}
+		
+	$gr_count=count($GLOBALS['grand']);
+	foreach($GLOBALS['grand'][1] as $gk=>$gv)
+	{
+		$GLOBALS['grand'][$gr_count+1][$gk]=array_sum(array_column($GLOBALS['grand'],$gk));
+	}
+	return $final;
 }
 
-function write_text_big_fill($pdf,$text, $x,$y, $w,$h)
+
+function prepare_grand_total($link,$bill_group,$bill_number,$rpp)
 {
-$pdf->SetFont('courier','B',15);
-$pdf->SetXY($x,$y);
-$pdf->SetTextColor(0);
-$pdf->SetFillColor(255);
-$pdf->SetDrawColor(0);
+	$sql=mk_sql($bill_group,$bill_number);
+	if(!$result=mysqli_query($link,$sql)){return FALSE;}
+	//$tot=mysqli_num_rows($result);
+	//echo $tot;
 
-$pdf->Rect($x, $y,$w,$h,'F');
-$pdf->MultiCell($w, $h, $text , $border=1, $align='L', 
-					$fill=true, $ln=1, $x='', $y='', $reseth=true, $stretch=0, 
-					$ishtml=false, $autopadding=false, $maxh=0, $valign='T', $fitcell=false);
 }
 
 
+function make_table($final,$rpp)
+{
+	foreach($final as $k=>$pg)
+	{
+		/////////
+		$tot_rec_in_page=count($pg);
+		echo '<table cellpadding="1" cellspacing="1" border="0.5" style="text-align:center;">';
+		$count=1;
+		echo '<tr >	<th colspan="2">Bill No:'.$pg[1]['bill_group'].'('.$pg[1]['bill_number'].')</th>
+					<th colspan="12" style="font-size: xx-large;">'.$GLOBALS['college'].'----'.$GLOBALS['allowances'].'</th>
+					<th colspan="2">'.$pg[1]['remark'].', Page No. ('.$k.')</th>		
+			</tr>';
+		$plus_head='		<tr>
+					<th width="3%"><b>Sr</b></th>
+					<th width="15%"><b>Emp Name<br>Dept,Post<br>7th Pay, 6th Pay</b></th>
+					<th width="5%"><b>(002)GP<br>Special<br>FP</b></th>
+					<th width="7%"><b>(001)(002)<br>P.Off<br>P.Est</b></th>
+					<th width="5%"><b>(128)<br>NPA</b></th>
+					<th width="5%"><b>(002)<br>LS/LE</b></th>
+					<th width="5%"><b>(005)<br>DA</b></th>
+					<th width="5%"><b>(006)<br>HRA</b></th>
+					<th width="5%"><b>(016)<br>CLA</b></th>
+					<th width="5%"><b>(009)<br>MA</b></th>
+					<th width="5%"><b>(013)<br>TA</b></th>
+					<th width="5%"><b>(104)<br>BA<br>Ceiling</b></th>
+					<th width="5%"><b>(132)WA<br>(131)Uni<br>(129)Nur</b></th>
+					<th width="7%"><b>Gross<br>Amt.</b></th>
+					<th width="5%"><b>For Audit<br>Only</b></th>
+					<th width="5%"><b>(510)ITx<br>(520)Sur</b></th>
+				</tr><tr>
+					<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+				</tr>';
+				
+		echo $plus_head;
+		foreach($pg as $data)
+		{
+			echo '<tr>';
+			echo_one_raw_p($data,$count,$rpp,$k,$tot_rec_in_page);
+			echo '</tr>';		
+			$count++;
+		}
+		
+		echo '</table>';
+		echo '<h2 style="page-break-after: always;"></h2>';
+		
+		////////////////////
+		echo '<table cellpadding="1" cellspacing="1" border="0.5" style="text-align:center;">';
+		$count=1;
+		echo '<tr >	<th colspan="2">Bill No:'.$pg[1]['bill_group'].'('.$pg[1]['bill_number'].')</th>
+					<th colspan="12" style="font-size: xx-large;">'.$GLOBALS['college'].'----'.$GLOBALS['deductions'].'</th>
+					<th colspan="2">'.$pg[1]['remark'].', Page No. ('.$k.')</th>		
+			</tr>';
+			
+		$ded_head='<tr>				
+					<th width="3%"><b>Sr</b></th>
+					<th width="5%"><b>(550)<br>HRR</b></th>
+					<th width="5%"><b>(570)<br>Prof<br>Tax</b></th>
+					<th width="5%"><b>(581)<br>SIS I/F<br>1981</b></th>
+					<th width="5%"><b>(582)<br>SIS S/F<br>1981</b></th>
+					<th width="5%"><b>(620)<br>GPF<br>non-IV</b></th>
+					<th width="5%"><b>()<br>CPF</b></th>
+					<th width="5%"><b>(013)<br>FES<br>Adv.</b></th>
+					<th width="5%"><b>(014)<br>Food<br>Adv.</b></th>
+					<th width="5%"><b>(592)<br>Car/Sct<br>Adv.</b></th>
+					<th width="5%"><b>HBA<br>(590)Pri<br>(760)Int</b></th>
+					<th width="5%"><b>(531)<br>GPF<br>CL-IV</b></th>
+					<th width="5%"><b>Recv.</b></th>
+					<th width="7%"><b>Tot.<br>Ded.</b></th>
+					<th width="7%"><b>Net<br>Amt.</b></th>
+					<th width="9%"><b>GPF<br>CPF<br>No</b></th>
+				</tr><tr>
+					<th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th><th>29</th><th>30</th><th>31</th><th>32</th>
+				</tr>';
+				
+		echo $ded_head;				
+		
+		foreach($pg as $data)
+		{
+			echo '<tr>';
+			echo_one_raw_m($data,$count,$rpp,$k,$tot_rec_in_page);
+			echo '</tr>';		
+			$count++;
+		}
+		echo '</table>';
+		echo '<h2 style="page-break-after: always;"></h2>';
+		
+		
+	}
+	
+		////////////
+		
+		echo '<table cellpadding="1" cellspacing="1" border="0.5" style="text-align:center;">';	
+				$plus_head='		<tr>
+					<th width="3%"><b></b></th>
+					<th width="15%"><b>Page</b></th>
+					<th width="5%"><b>(002)GP<br>Special<br>FP</b></th>
+					<th width="7%"><b>(001)(002)<br>P.Off<br>P.Est</b></th>
+					<th width="5%"><b>(128)<br>NPA</b></th>
+					<th width="5%"><b>(002)<br>LS/LE</b></th>
+					<th width="5%"><b>(005)<br>DA</b></th>
+					<th width="5%"><b>(006)<br>HRA</b></th>
+					<th width="5%"><b>(016)<br>CLA</b></th>
+					<th width="5%"><b>(009)<br>MA</b></th>
+					<th width="5%"><b>(013)<br>TA</b></th>
+					<th width="5%"><b>(104)<br>BA<br>Ceiling</b></th>
+					<th width="5%"><b>(132)WA<br>(131)Uni<br>(129)Nur</b></th>
+					<th width="7%"><b>Gross<br>Amt.</b></th>
+					<th width="5%"><b>For Audit<br>Only</b></th>
+					<th width="5%"><b>(510)ITx<br>(520)Sur</b></th>
+				</tr><tr>
+					<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th>
+				</tr>';
+				
+		echo $plus_head;
+		
+		foreach($GLOBALS['grand'] as $pkk=>$pvv)
+		{
+			echo '<tr>';
+			echo_one_raw_p($pvv,$pkk,20,1,count($GLOBALS['grand']));
+			echo '</tr>';		
+		}
+		
+		
+		echo '</table>';
+		echo '<h2 style="page-break-after: always;"></h2>';
+
+		//////////////
+		echo '<table cellpadding="1" cellspacing="1" border="0.5" style="text-align:center;">';	
+			$ded_head='<tr>				
+					<th width="3%"><b>Page</b></th>
+					<th width="5%"><b>(550)<br>HRR</b></th>
+					<th width="5%"><b>(570)<br>Prof<br>Tax</b></th>
+					<th width="5%"><b>(581)<br>SIS I/F<br>1981</b></th>
+					<th width="5%"><b>(582)<br>SIS S/F<br>1981</b></th>
+					<th width="5%"><b>(620)<br>GPF<br>non-IV</b></th>
+					<th width="5%"><b>()<br>CPF</b></th>
+					<th width="5%"><b>(013)<br>FES<br>Adv.</b></th>
+					<th width="5%"><b>(014)<br>Food<br>Adv.</b></th>
+					<th width="5%"><b>(592)<br>Car/Sct<br>Adv.</b></th>
+					<th width="5%"><b>HBA<br>(590)Pri<br>(760)Int</b></th>
+					<th width="5%"><b>(531)<br>GPF<br>CL-IV</b></th>
+					<th width="5%"><b>Recv.</b></th>
+					<th width="7%"><b>Tot.<br>Ded.</b></th>
+					<th width="7%"><b>Net<br>Amt.</b></th>
+					<th width="9%"><b>GPF<br>CPF<br>No</b></th>
+				</tr><tr>
+					<th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th><th>29</th><th>30</th><th>31</th><th>32</th>
+				</tr>';
+				
+		echo $ded_head;			
+		foreach($final as $k=>$pg)
+		{
+			
+			echo '<tr>';
+			echo_one_raw_m($pg[count($pg)],count($pg),$rpp,$k,$tot_rec_in_page);
+			echo '</tr>';		
+		}
+		echo '</table>';
+		echo '<h2 style="page-break-after: always;"></h2>';		
+}
+
+
+function echo_one_raw_m($d,$count,$rpp,$page,$tt)
+{
+	if($count<$tt)
+	{
+		$sq=($count+(($page-1)*$rpp));
+		echo '<td>'.$sq.'<br><br></td>';
+	}
+	else
+	{
+		echo '<td>Page<br>('.$page.')<br>Total</td>';
+	}
+	
+	echo '<td>'.$d['Rent_of_Building_9560(-)'].'</td>';
+	echo '<td>'.$d['Professional_Tax_9570(-)'].'</td>';
+	echo '<td>'.$d['SIS_I_9581(-)'].'</td>';
+	echo '<td>'.$d['SIS_S_9582(-)'].'</td>';
+	echo '<td>'.$d['GPF_non_IV_9670(-)'].'</td>';
+	echo '<td>'.$d['CPF_9690(-)'].'</td>';
+	echo '<td>'.$d['Festival_A_5701(-)'].'</td>';
+	echo '<td>'.$d['Food_Grains_A_5801(-)'].'</td>';
+	echo '<td>'.$d['Car_A_9741(-)'].'</td>';
+	echo '<td>'.$d['HBA_9591(-)'].'</td>';
+	echo '<td>'.$d['GPF_IV_9531(-)'].'</td>';
+		
+	if($count<$tt)
+	{
+		echo '<td>'.$d['Pay_of_Officer_0101(-)'].'<br>'.$d['Pay_of_Establishment_0102(-)'].'</td>';
+	}
+	else
+	{
+		echo '<td>'.($d['Pay_of_Officer_0101(-)']+$d['Pay_of_Establishment_0102(-)']).'</td>';
+	}
+	echo '<td>'.$d['deduction'].'</td>';
+	echo '<td>'.$d['net'].'</td>';
+	
+	if($count<$tt)
+	{
+		echo '<td>'.$d['gpf_acc'].'<br>'.$d['cpf_acc'].'</td>';
+	}
+	else
+	{
+		echo '<td></td>';
+	}
+
+}
+
+function echo_one_raw_p($d,$count,$rpp,$page,$tt)
+{
+		if(1==1)
+		{
+		if($d['Grade_Pay_of_Officer_0101(+)']>0){$gp=$d['Grade_Pay_of_Officer_0101(+)'];}
+		else($gp=$d['Grade_Pay_of_Establishment_0102(+)']);	
+		$sq=($count+(($page-1)*$rpp));
+		echo 
+			'<td>'.$sq.'</td>	
+			<td>'.
+				$d['fullname'].'<br>'.
+				substr($d['department'],0,10).','.substr($d['post'],0,4).'<br>'.
+				$d['pay_scale'].','.$d['old_pay_scale'].
+			'</td>
+			<td>'
+					.$gp.'<br>'		
+					.$d['Special_Post_Allow_0104(+)'].'<br>'
+					.$d['Family_Welfare_Allow_0104(+)'].
+			'</td>';
+		echo '<td>';
+		echo $d['Pay_of_Officer_0101(+)'].'<br>'.
+			 $d['Pay_of_Establishment_0102(+)'];
+		echo '</td>';
+		echo '<td>';
+		echo $d['NPA_0128(+)'].'<br>';
+		echo '</td>';	
+		echo 	'<td>'.
+				$d['Leave_Salary_Encash_0109(+)']
+				.'</td>';		
+		echo 	'<td>'.
+				$d['Dearness_Allowance_0103(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['House_Rent_Allowance_0110(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['Compansatory_Local_Allowance_0111(+)']
+				.'</td>';				
+		echo 	'<td>'.
+				$d['Medical_Allowance_0107(+)']
+				.'</td>';	
+		echo 	'<td>'.
+				$d['Transport_Allowance_0113(+)']
+				.'</td>';	
+		echo 	'<td>'.
+				$d['BA_0104(+)'].'<br>'.$d['Ceiling_Extra_0104(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['Washing_Allowance_0132(+)'].'<br>'.$d['Uniform_Allowance_0131(+)'].'<br>'.$d['Nursing_Allownace_0129(+)']
+				.'</td>';		
+		echo 	'<td>'.
+				$d['gross']
+				.'</td>';	
+		echo 	'<td></td>';
+		echo 	'<td>'.
+				$d['Income_Tax_9510(-)']
+				.'</td>';
+	}
+	else
+	{
+		echo '	<td></td>
+				<td>Page<br>('.$page.')<br>Total</td>
+				<td>'.
+				($d['Grade_Pay_of_Officer_0101(+)'] +
+				$d['Grade_Pay_of_Establishment_0102(+)']+
+				$d['Special_Post_Allow_0104(+)']+
+				$d['Family_Welfare_Allow_0104(+)']
+				)
+				.'</td>';
+				
+		echo 	'<td>'.
+				($d['Pay_of_Officer_0101(+)'] +	$d['Pay_of_Establishment_0102(+)'])
+				.'</td>';
+		echo 	'<td>'.
+				$d['NPA_0128(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['Leave_Salary_Encash_0109(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['Dearness_Allowance_0103(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['House_Rent_Allowance_0110(+)']
+				.'</td>';
+		echo 	'<td>'.
+				$d['Compansatory_Local_Allowance_0111(+)']
+				.'</td>';	
+		echo 	'<td>'.
+				$d['Medical_Allowance_0107(+)']
+				.'</td>';	
+		echo 	'<td>'.
+				$d['Transport_Allowance_0113(+)']
+				.'</td>';
+		echo 	'<td>'.
+				($d['BA_0104(+)']+$d['Ceiling_Extra_0104(+)'])
+				.'</td>';
+		echo 	'<td>'.
+				($d['Washing_Allowance_0132(+)'] + $d['Uniform_Allowance_0131(+)'] + $d['Nursing_Allownace_0129(+)'])
+				.'</td>';				
+		echo 	'<td>'.
+				$d['gross']
+				.'</td>';
+		echo 	'<td></td>';
+		echo 	'<td>'.
+				$d['Income_Tax_9510(-)']
+				.'</td>';
+		
+	}
+}
+
+
+
+*/
 
 ?>
 

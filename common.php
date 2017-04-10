@@ -902,7 +902,7 @@ function new_salary($link,$staff_id,$bill_group)
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_group',$bill_group,
 												'fullname',$staff_detail['fullname']);
-			update_or_insert_field_by_id_tpc($link,'salary',
+			/*update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_group',$bill_group,
 												'department',$staff_detail['department']);
 			update_or_insert_field_by_id_tpc($link,'salary',
@@ -925,7 +925,7 @@ function new_salary($link,$staff_id,$bill_group)
 												'pan',$staff_detail['pan']);
 			update_or_insert_field_by_id_tpc($link,'salary',
 												'staff_id',$staff_id,'bill_group',$bill_group,
-												'quarter',$staff_detail['quarter']);
+												'quarter',$staff_detail['quarter']);*/
 
 																																																																											
 																																				
@@ -1095,8 +1095,28 @@ function display_salary($link,$slr)
 	echo 			'</th>
 				</tr>';
 	echo 		'<tr>';
-	echo 			'<th>'.$slr['bank'].':'.$slr['bank_acc_number'].'</th>';
+	//echo 			'<th>'.$slr['bank'].':'.$slr['bank_acc_number'].'</th>';
 	
+	echo 	'<th>Bank:';
+	echo 				'<input
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=bank
+						value=\''.$slr['bank'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';	
+	
+	echo 	'Acc No:';
+	echo 				'<input
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=bank_acc_number
+						value=\''.$slr['bank_acc_number'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';		
+	echo	'</th>';	
 	echo 	'<th>Bill Group:';
 	echo 				'<input readonly
 						style="text-align:left;"
@@ -1122,13 +1142,55 @@ function display_salary($link,$slr)
 	
 	echo 		'	</tr>';
 	echo 		'<tr>';
-	echo 			'<th>GPF:'.$slr['gpf_acc'].'</th>
-					<th>CPF:'.$slr['cpf_acc'].'</th>
-					<th>ID/AADHAR:'.$slr['staff_id'].'</th>
+	
+	echo 	'<th>GPF:';
+	echo 				'<input
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=gpf_acc
+						value=\''.$slr['gpf_acc'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';
+	echo	'</th>';	
+	echo 	'<th>CPF:';
+	echo 				'<input
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=cpf_acc
+						value=\''.$slr['cpf_acc'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';
+	echo	'</th>';	
+	
+	echo	'<th>ID/AADHAR:'.$slr['staff_id'].'</th>
 				</tr>';
 	echo 		'<tr>';
-	echo 			'<th>PAN:'.$slr['pan'].'</th>
-					<th>QTR:'.$slr['quarter'].'</th>';			
+
+	echo 	'<th>PAN:';
+	echo 				'<input
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=pan
+						value=\''.$slr['pan'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';
+	echo	'</th>';
+	echo 	'<th>QTR:';
+	echo 				'<input
+						style="text-align:left;"
+						type=text 
+						size=10 
+						id=quarter
+						value=\''.$slr['quarter'].'\' 
+						onchange="do_work(\''.$slr['staff_id'].'\',\''.$slr['bill_group'].'\',this)" 
+					>';
+	echo	'</th>';						
+					
+					
+							
 	echo			'<th>Head:';
 	echo 				'<input 
 						style="text-align:left;"
@@ -1287,5 +1349,34 @@ function copy_salary($link,$from_staff,$to_staff,$from_bn,$to_bn,$ar)
 	}
 
 }
+
+
+function get_bill_group($link)
+{
+	echo '<form method=post>';
+	echo '<table class=border style="background-color:lightgreen;">';
+	echo '<tr><th>Select Bill group</th><td>';
+	echo '</td><tr><th>Bill group:</th><td>';
+	$sql='select distinct bill_group from salary order by bill_group desc';
+	mk_select_from_sql($link,$sql,'bill_group','bill_group','','');
+	echo '</td></tr><tr><td  align=center colspan=2>';
+	echo '<input type=submit name=submit value=get_bill_numbers>';
+	echo '</td></tr></table></form>';
+}
+
+function get_bill_number($link,$bill_group)
+{
+	echo '<form method=post action=print_bill_step_2.php>';
+	echo '<table class=border style="background-color:lightgreen;">';
+	echo '<tr><th>Bill Group</th><td><input type=text readonly name=bill_group value=\''.$bill_group.'\'</td></tr>';
+	echo '</td><tr><th>Bill_number:</th><td>';
+	$sql='select distinct bill_number from salary where bill_group=\''.$bill_group.'\' order by bill_number desc';
+	mk_select_from_sql($link,$sql,'bill_number','bill_number','','');
+	echo '</td></tr><tr><td  align=center colspan=2>';
+	echo '<input type=submit name=submit value=print_reports>';
+	echo '</td></tr></table></form>';
+}
+
+
 
 ?>
