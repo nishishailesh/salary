@@ -4,6 +4,8 @@ $nojunk='defined';
 require_once 'common.php';
 //require_once 'common.js';
 require_once('tcpdf/tcpdf.php');
+require_once('Numbers/Words.php');
+
 $link=connect();
 
 
@@ -19,6 +21,7 @@ $GLOBALS['grand']=array();
 
 $array_1=prepare_array_1($link,$_POST['bill_group'],$_POST['bill_number'],$rpp);
 $remark=$array_1[0]['remark'];
+$remark_my=$array_1[0]['from_date'];
 
 $array_2=prepare_array_2($array_1,$rpp);
 $array_3=prepare_array_3($array_2);
@@ -64,6 +67,8 @@ outer_front($pdf,$array_4,$remark);
 $pdf->AddPage();
 $pdf->SetFont('dejavusans', '', 9);
 $pdf->writeHTML($myStr, true, false, true, false, '');
+$pdf->AddPage();
+outer_back($pdf,$array_4,$remark_my);
 $pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_outer.pdf', 'I');
 
 
@@ -114,7 +119,10 @@ as deduction,
 
 from salary
 
-where bill_group=\''.$bill_group.'\' and bill_number=\''.$bill_number.'\'';
+where bill_group=\''.$bill_group.'\' and bill_number=\''.$bill_number.'\'
+
+order by fullname
+';
 return $sql;
 
 }
@@ -338,14 +346,23 @@ function print_outer($a)
 {
 		$aa=prepare_array_3($a);
 		$aaa=prepare_array_4($aa);
+		$total_pages=count($a);
 		
 		foreach($a as $page_number=>$page_detail)
 		{	
 			print_plus_page($page_number,$page_detail,$aa[$page_number],current($a[0])['remark']);
 			print_minus_page($page_number,$page_detail,$aa[$page_number],current($a[0])['remark']);
+			if($total_pages>1)
+			{
+				echo '<h2 style="page-break-after: always;"></h2>';
+			}
 		}
-		print_summary_page_plus($aa,$aaa,current($a[0])['remark']);
-		print_summary_page_minus($aa,$aaa,current($a[0])['remark']);
+		if($total_pages>1)
+		{
+			print_summary_page_plus($aa,$aaa,current($a[0])['remark']);
+			print_summary_page_minus($aa,$aaa,current($a[0])['remark']);
+		}
+
 }
 
 
@@ -457,7 +474,7 @@ function print_minus_page($n,$a2,$a3,$remark)
 					<th width="5%"><b>Recv.</b></th>
 					<th width="7%"><b>Tot.<br>Ded.</b></th>
 					<th width="7%"><b>Net<br>Amt.</b></th>
-					<th width="9%"><b>GPF<br>CPF<br>No</b></th>
+					<th width="12%"><b>GPF<br>CPF<br>No</b></th>
 				</tr><tr>
 					<th>17</th><th>18</th><th>19</th><th>20</th><th>21</th><th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th><th>29</th><th>30</th><th>31</th><th>32</th>
 				</tr>';
@@ -470,7 +487,9 @@ function print_minus_page($n,$a2,$a3,$remark)
 	}
 	echo_a3_minus($n,$a3);
 	echo '</table>';
-	echo '<h2 style="page-break-after: always;"></h2>';
+	
+	//moved out
+	//echo '<h2 style="page-break-after: always;"></h2>';
 }
 
 function echo_a1_minus($n,$d)
@@ -633,7 +652,7 @@ function outer_front($pdf,$array_4,$remark)
 
 	//write_text_fill_left($pdf,'GPF non Cl-IV   9670(-)',188,76,55,4);
 	write_text($pdf,$array_4['GPF_non_IV_9670(-)'],307,53,20,5);
-	write_text($pdf,$array_4['Rent_of_Building_9560(-)'],239,81,20,5);
+	write_text($pdf,$array_4['Rent_of_Building_9560(-)'],239,89,20,5);
 	write_text($pdf,$array_4['Professional_Tax_9570(-)'],239,95,20,5);
 	write_text($pdf,$array_4['SIS_I_9581(-)'],239,108,20,5);
 	write_text($pdf,$array_4['SIS_S_9582(-)'],239,118,20,5);
@@ -653,6 +672,8 @@ function outer_front($pdf,$array_4,$remark)
 	write_text($pdf,$total_deduction,307,137,20,5);
 	$net_total=$gross_total-$total_deduction;
 	write_text($pdf,$net_total,307,141.5,20,5);
+	$net_total_words=Numbers_Words::toWords($net_total,"en_US");
+	write_text_small($pdf,$net_total_words.' only', 257,145.5,70,5);
 
 	//12170501
 	if(round(($_POST['bill_group']/1000000),0)==12)
@@ -668,6 +689,24 @@ function outer_front($pdf,$array_4,$remark)
 		write_text_big_fill($pdf,$remark,79,67,35,10);
 }
 
+function outer_back($pdf,$array_4,$remark)
+{
+	$img_file = 'outer_back.jpg';
+	$pdf->Image($img_file, 30, 20, 0, 0, '', '', '', false, 300, '', false, false, 0);
+	$mynet='Received Cont Rs. '.$array_4['net']. '(in Words)'.Numbers_Words::toWords($array_4['net'],"en_US").' only';
+	write_text_fill_left($pdf,$mynet,45,40,140,10);
+	
+	write_text_fill_left($pdf,'',78,200,28,10);
+	write_text_fill_left($pdf,'',98,185,24,10);
+
+	$date_str=date('m-y',strtotime($remark));
+	write_text_fill_left($pdf,$date_str,208,125,14,5);
+	write_text_fill_left($pdf,$date_str,208,137,14,5);
+	
+	$newdate=strtotime('-1 month',strtotime($remark));
+	$newdate_str=date('m-y',$newdate);
+	write_text_fill_left($pdf,$newdate_str,208,100,14,5);
+}
 
 
 function write_text($pdf,$text, $x,$y, $w,$h)
@@ -680,9 +719,19 @@ $pdf->MultiCell($w, $h, $text , $border=0, $align='R',
 					$ishtml=false, $autopadding=true, $maxh=0, $valign='T', $fitcell=false);	
 }
 
+function write_text_small($pdf,$text, $x,$y, $w,$h)
+{
+$pdf->SetFont('courier','B',7);
+$pdf->SetXY($x,$y);
+$pdf->SetTextColor(0);
+$pdf->MultiCell($w, $h, $text , $border=0, $align='R', 
+					$fill=false, $ln=1, $x='', $y='', $reseth=true, $stretch=0, 
+					$ishtml=false, $autopadding=true, $maxh=0, $valign='T', $fitcell=false);	
+}
+
 function write_text_fill_left($pdf,$text, $x,$y, $w,$h)
 {
-$pdf->SetFont('courier','B',10);
+$pdf->SetFont('freesans','B',10);
 $pdf->SetXY($x,$y);
 $pdf->SetTextColor(0);
 $pdf->SetFillColor(255);

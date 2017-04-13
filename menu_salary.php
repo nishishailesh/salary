@@ -59,7 +59,7 @@ echo '
 				<button formaction=get_id_for_edit_salary.php type=submit onclick="hidemenu()" name=edit>Edit</button>
 			</td></tr>			
 		</table>
-<td><td>
+</td><td>
 		<button type=button onclick="showhidemenu(\'button2\')">Bill-wise</button>
 		<table  id="button2" class="menu" style="position:absolute; display:none;">
 			<tr><td>
@@ -71,7 +71,14 @@ echo '
 			<tr><td>
 				<button formaction=print_bill.php type=submit onclick="hidemenu()" name=pb>Print</button>
 			</td></tr>	
-		</table>			
+		</table>		
+</td><td>
+		<button type=button onclick="showhidemenu(\'button4\')">Salary Slip</button>
+		<table  id="button4" class="menu" style="position:absolute; display:none;">
+			<tr><td>
+				<button formaction=salary_slip_step_1.php type=submit onclick="hidemenu()" name=print_salary>Print</button>
+			</td></tr>	
+		</table>					
 </td><td>
 		<button  type=button onclick="showhidemenu(\'button3\')">Manage My Account('.$_SESSION['login'].')</button>
 		<table  id="button3" class="menu" style="position: absolute;display:none;">
