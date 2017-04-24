@@ -63,7 +63,7 @@ $pdf->SetFont('dejavusans', '', 9);
 $pdf->SetMargins(30, 20, 30);
 $pdf->AddPage();
 $pdf->writeHTML($myStr, true, false, true, false, '');
-$pdf->Output('example_006.pdf', 'I');
+$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_Itax.pdf', 'I');
 
 
 function mk_sql($bill_group,$bill_number)

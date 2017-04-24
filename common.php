@@ -1014,10 +1014,7 @@ function list_bill($link,$bill_group)
 {
 	$sql='select * from salary where bill_group=\''.$bill_group.'\' order by bill_number';
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
-	echo '<form method=post action=outer_1.php target=_blank>
-				<input type=hidden name=bill_group value=\''.$bill_group.'\'>
-				<button>Print</button>
-		</form>';
+
 		
 	echo '<button type=button onclick="showhide(\'all_salary\')">Show/Hide</button>';
 
@@ -1377,6 +1374,91 @@ function get_bill_number($link,$bill_group)
 	echo '</td></tr></table></form>';
 }
 
+function print_one_salary_slip($link,$staff_id,$bill_group)
+{
+	$slr=get_raw($link,'select * from salary where staff_id=\''.$staff_id.'\' and bill_group=\''.$bill_group.'\'');
+	
+	if($slr===FALSE || count($slr)<=0){return false;}
+		
+	echo 	'<h1 align="center">Salary Slip</h1>';	
+	echo 	'<h2 align="center">Government Medical college Surat</h2>';
+	echo 	'<table border="1" align="left" cellspacing="0" cellpadding="1">';
 
+	echo			'<tr>';
+	echo 			'<th>'.$slr['fullname'].'</th><th>'.$slr['department'].'</th><th>'.$slr['post'].'</th>';
+	echo		'</tr>';
+
+	echo 		'<tr>';
+	echo 			'<th>QTR:'.$slr['quarter'].'</th>';						
+	echo 			'<th>'.$slr['bank'].':'.$slr['bank_acc_number'].'</th>';
+	echo			'<th>ID/AADHAR:'.$slr['staff_id'].'</th>';
+	echo		'</tr>';
+	
+	echo 		'<tr>';
+	echo 			'<th>GPF:'.$slr['gpf_acc'].'</th>';	
+	echo 			'<th>CPF:'.$slr['cpf_acc'].'</th>';	
+	echo 			'<th>PAN:'.$slr['pan'].'</th>';
+	echo 		'</tr>';
+	echo 		'<tr>';
+	echo			'<th>Bill:'.$slr['bill_group'].'-'.$slr['bill_number'].'</th>';
+	echo			'<th>Bill Type:'.$slr['bill_type'].'</th>';
+	echo 			'<th>'.mysql_to_india_date($slr['from_date']).' to '.mysql_to_india_date($slr['to_date']).'</th>';
+	echo 		'</tr>';						
+	echo 						'<tr><th align="left" colspan="3" >Remark: '.$slr['remark'].'</th>';
+	echo			'</tr>';	
+	echo 	'</table>';
+	
+	echo '<table border="0"  cellspacing="0" cellpadding="1">
+	<tr><th colspan="2" align="center"><b>Payments</b></th><th colspan="2" align="center"><b>Deductions</b></th></tr>
+	<tr>
+		
+		<td colspan="2">
+	
+			<table border="1" cellspacing="0" cellpadding="1">';
+	
+						$exclude=array('fullname','department','post','bank','bank_acc_number','bill_group',
+						'budget_head','gpf_acc','cpf_acc','staff_id','remark',
+						'staff_position_id','pan','quarter','bill_number','from_date','to_date','bill_type','pay_scale','old_pay_scale');
+
+						$plus=0;
+						$minus=0;
+	foreach ($slr as $key=>$value)
+	{
+		if(!in_array($key,$exclude))
+		{				
+			if($key=='Income_Tax_9510(-)')
+			{echo '</table></td><td colspan="2"><table border="1" cellspacing="0" cellpadding="1">';}
+			
+			echo 		'<tr><td width="70%"><b>'.substr($key,0,-8).'</b></td><td width="30%" align="right">'.$value.'</td></tr>';
+			
+			if(substr($key,-3)=='(+)'){$plus=$plus+$value;}
+			elseif(substr($key,-3)=='(-)'){$minus=$minus+$value;}
+		}
+	}	
+	
+	echo '</table></td></tr>';
+	
+	echo '
+			<tr>
+			<td  border="1" width="35%">Gross</td>
+			<td    border="1" width="15%"style="text-align:right;" >'.$plus.'</td>
+			<td    border="1" width="35%">Deduction</td>
+			<td    border="1" width="15%"style="text-align:right;" >'.$minus.'</td>
+			</tr>';
+	echo '<tr>	<td colspan="2"></td>
+				<td   border="1" >Net</td>
+				<td    border="1" style="text-align:right;" >'.($plus-$minus).'</td>
+			</tr>';
+
+	echo '</table>';
+	echo '<br><br><br><br><br><br><br>';
+	
+	echo '<table border="0" >';
+	echo '<tr><td><h5 align="right" style="float:right">Account Officer</h5></td></tr>';
+	echo '<tr><td><h5 align="right">Government Medical College</h5></td></tr>';
+	echo '<tr><td><h5 align="rignt">Surat</h5></td></tr>';
+	echo '</table>';
+	
+}
 
 ?>

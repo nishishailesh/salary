@@ -69,7 +69,7 @@ $pdf->SetFont('dejavusans', '', 9);
 $pdf->writeHTML($myStr, true, false, true, false, '');
 $pdf->AddPage();
 outer_back($pdf,$array_4,$remark_my);
-$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_outer.pdf', 'I');
+$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_outer_special.pdf', 'I');
 
 
 function mk_sql($bill_group,$bill_number)
@@ -691,21 +691,21 @@ function outer_front($pdf,$array_4,$remark)
 
 function outer_back($pdf,$array_4,$remark)
 {
-	$img_file = 'outer_back.jpg';
+	$img_file = 'special_cut.jpg';
 	$pdf->Image($img_file, 30, 20, 0, 0, '', '', '', false, 300, '', false, false, 0);
 	$mynet='Received Contents Rs. '.$array_4['net']. '(in Words)'.Numbers_Words::toWords($array_4['net'],"en_US").' only';
 	write_text_fill_left($pdf,$mynet,45,40,140,10);
 	
-	write_text_fill_left($pdf,'',78,200,28,10);
-	write_text_fill_left($pdf,'',98,185,24,10);
+	//write_text_fill_left($pdf,'',78,200,28,10);
+	//write_text_fill_left($pdf,'',98,185,24,10);
 
-	$date_str=date('m-y',strtotime($remark));
-	write_text_fill_left($pdf,$date_str,208,125,14,5);
-	write_text_fill_left($pdf,$date_str,208,137,14,5);
+	//$date_str=date('m-y',strtotime($remark));
+	//write_text_fill_left($pdf,$date_str,208,125,14,5);
+	//write_text_fill_left($pdf,$date_str,208,137,14,5);
 	
-	$newdate=strtotime('-1 month',strtotime($remark));
-	$newdate_str=date('m-y',$newdate);
-	write_text_fill_left($pdf,$newdate_str,208,100,14,5);
+	//$newdate=strtotime('-1 month',strtotime($remark));
+	//$newdate_str=date('m-y',$newdate);
+	//write_text_fill_left($pdf,$newdate_str,208,100,14,5);
 }
 
 

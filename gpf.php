@@ -28,6 +28,7 @@ $GLOBALS['ministry']='Health';
 $GLOBALS['tan']='SRTG01499B';
 
 $array_1=prepare_array_1($link,$_POST['bill_group'],$_POST['bill_number'],$rpp);
+if(count($array_1)<=0){echo '<h2>No Records. Nothing to print</h2>';exit(0);}
 $array_2=prepare_array_2($array_1,$rpp);
 $GLOBALS['total_pages']=count($array_2);
 $array_3=prepare_array_3($array_2);
@@ -52,7 +53,7 @@ class ACCOUNT extends TCPDF {
 }
 
 //$pdf = new ACCOUNT('L', 'mm', 'A4', true, 'UTF-8', false);
-$pdf = new ACCOUNT('P', 'mm', 'A4', true, 'UTF-8', false);
+$pdf = new ACCOUNT('L', 'mm', 'A4', true, 'UTF-8', false);
 $pdf->SetFont('dejavusans', '', 9);
 //$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 //The A3 size print measures 29.7 x 42.0cm
@@ -130,6 +131,7 @@ function prepare_array_1($link,$bill_group,$bill_number,$rpp)
 	if(!$result=mysqli_query($link,$sql)){return FALSE;}
 	$tot=mysqli_num_rows($result);
 	//echo $tot;
+	$array_1=array();
 	while($result_array=mysqli_fetch_assoc($result))
 		{	
 			$array_1[]=$result_array;

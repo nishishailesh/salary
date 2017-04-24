@@ -53,7 +53,7 @@ class ACCOUNT extends TCPDF {
 }
 
 //$pdf = new ACCOUNT('L', 'mm', 'A4', true, 'UTF-8', false);
-$pdf = new ACCOUNT('P', 'mm', 'A4', true, 'UTF-8', false);
+$pdf = new ACCOUNT('L', 'mm', 'A4', true, 'UTF-8', false);
 $pdf->SetFont('dejavusans', '', 9);
 //$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
 //The A3 size print measures 29.7 x 42.0cm
@@ -66,7 +66,7 @@ $pdf->SetFont('dejavusans', '', 9);
 $pdf->SetMargins(30, 20, 30);
 $pdf->AddPage();
 $pdf->writeHTML($myStr, true, false, true, false, '');
-$pdf->Output('example_006.pdf', 'I');
+$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_HR.pdf', 'I');
 
 
 function mk_sql($bill_group,$bill_number)

@@ -13,7 +13,7 @@ $link=connect();
 //rpp is raw per page
 //echo '<pre>';
 
-$rpp=20;
+$rpp=30;
 $GLOBALS['total_pages']='';
 $GLOBALS['college']='Government Medical College, Majura Gate, Surat';
 $GLOBALS['allowances']='Report on Pay and Allowances Bill';
@@ -26,11 +26,9 @@ $GLOBALS['phone']='091-261-2244175';
 $GLOBALS['mobile']='091 98244 19535';
 $GLOBALS['ministry']='Health';
 $GLOBALS['tan']='SRTG01499B';
-$GLOBALS['sis_a']='120';
 
 $array_1=prepare_array_1($link,$_POST['bill_group'],$_POST['bill_number'],$rpp);
 if(count($array_1)<=0){echo '<h2>No Records. Nothing to print</h2>';exit(0);}
-
 $array_2=prepare_array_2($array_1,$rpp);
 $GLOBALS['total_pages']=count($array_2);
 $array_3=prepare_array_3($array_2);
@@ -54,20 +52,12 @@ class ACCOUNT extends TCPDF {
 	}	
 }
 
-$pdf = new ACCOUNT('L', 'mm', 'A4', true, 'UTF-8', false);
+$pdf = new ACCOUNT('P', 'mm', 'A4', true, 'UTF-8', false);
 $pdf->SetFont('dejavusans', '', 9);
-//$pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-//The A3 size print measures 29.7 x 42.0cm
-//29 cm
-//06 cm left right margin
-//23 cm remain
-//16 columns
-//1.44 cm per column
-//6.25% for each column
 $pdf->SetMargins(30, 20, 30);
 $pdf->AddPage();
 $pdf->writeHTML($myStr, true, false, true, false, '');
-$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'SIS.pdf', 'I');
+$pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_bank_net.pdf', 'I');
 
 
 function mk_sql($bill_group,$bill_number)
@@ -119,7 +109,7 @@ from salary
 
 where 		bill_group=\''.$bill_group.'\' 
 		and bill_number=\''.$bill_number.'\'
-		and `SIS_I_9581(-)`>0
+		order by fullname
 ';
 return $sql;
 
@@ -206,24 +196,21 @@ function print_outer($a)
 
 function print_minus_page($n,$a2,$a3,$prev_a3,$remark)
 {
-	echo '<h4 align="center" style="border: 2px solid #000000;">Schedule pertaining to the credit head 8011 (Insurance Fund Pension fund)</h4>';
+	echo '<h4 align="center" style="border: 2px solid #000000;">Bank Account and Net Pay (Page:'.($n+1).')</h4>';
 	echo '<h4 align="center">'.$GLOBALS['college'].'</h3>';
-	echo '<h4 align="center">Under Head: 8011 Insurance and Pension Fund</h4>';
-	echo '<h4 align="center">Gujarat Government Employees Group Insurance Scheme -1981</h4>';
-	echo '<h4 align="center">For the month of '.$remark.'';
-	echo ' [Bill: '.$_POST['bill_group'].'-'.$_POST['bill_number'].'] (Page:'.($n+1).')</h4>';
+	echo '<h4 align="center">Under Head: 0210 Medical and Public Health</h4>';
+	echo '<h4 align="center">For the month of '.$remark.', Bill: '.$_POST['bill_group'].'-'.$_POST['bill_number'].'</h4>';
 	
 	echo '<table cellpadding="1" cellspacing="0" border="0.3" style="text-align:center;">';
 
 		$ded_head='<tr>				
-					<th width="5%"><b>Sr</b></th>
-					<th width="25%"><b>Name of Emp</b></th>
-					<th width="10%"><b>Group</b></th>
-					<th width="20%"><b>Insurance Fund</b></th>
-					<th width="20%"><b>Saving Fund</b></th>
-					<th width="20%"><b>Total</b></th>
+					<th width="10%"><b>Sr</b></th>
+					<th width="30%" align="left"><b>Name of Emp</b></th>
+					<th width="25%"><b>Bank Name</b></th>
+					<th width="20%"><b>Bank Account</b></th>
+					<th width="20%"><b>Net Payment</b></th>
 				</tr><tr>
-					<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+					<th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>
 				</tr>';
 				
 		echo $ded_head;				
@@ -252,13 +239,8 @@ function print_minus_page($n,$a2,$a3,$prev_a3,$remark)
 	//Remove $this as follwos in like 97
 	//$truth_table  = ($classname == get_class()) ? 'T' : 'F';
 
-	if($n==($GLOBALS['total_pages']-1))
-	{
-		$nw=new Numbers_Words();
-		echo '<table><tr><td align="right">Total in Words: '.
-				$nw->toWords(($a3['SIS_I_9581(-)']+$a3['SIS_S_9582(-)']),"en_US").' Only</td></tr>
-				</table>';
-	}
+	//echo '<table><tr><td align="right">Total in Words: '.Numbers_Words::toWords($a3['Rent_of_Building_9560(-)'],"en_US").' Only</td></tr>
+	//</table>';
 	
 	if($n<($GLOBALS['total_pages']-1))
 	{
@@ -268,35 +250,27 @@ function print_minus_page($n,$a2,$a3,$prev_a3,$remark)
 
 function echo_a1_minus($n,$d)
 {
-	
-	if($d['SIS_I_9581(-)']==$GLOBALS['sis_a'])
-	{
-		$group='A';
-	}
-	else
-	{
-		$group='';
-	}
-	
+		$ind=mysql_to_india_date($d['from_date']);
+		$ddd=substr($ind,-7);
+		
 			echo '<tr>';
 		echo '<td>'.($n+1).'</td>';
 		echo '<td align="left">'.$d['fullname'].'</td>';
-		echo '<td>'.$group.'</td>';
-		echo '<td>'.$d['SIS_I_9581(-)'].'</td>';
-		echo '<td>'.$d['SIS_S_9582(-)'].'</td>';
-		echo '<td>'.($d['SIS_I_9581(-)']+$d['SIS_S_9582(-)']).'</td>';
+		echo '<td>'.$d['bank'].'</td>';
+		echo '<td>'.$d['bank_acc_number'].'</td>';
+		echo '<td align="right">'.$d['net'].'</td>';
 			echo '</tr>';
 }
 
 function echo_a3_minus($n,$d,$f)
 {
+
 			echo '<tr>';
 		echo '<td></td>';
 		echo '<td></td>';
+		echo '<td></td>';
 		echo '<td>Total '.$f.'</td>';
-		echo '<td>'.$d['SIS_I_9581(-)'].'</td>';
-		echo '<td>'.$d['SIS_S_9582(-)'].'</td>';
-		echo '<td>'.($d['SIS_I_9581(-)']+$d['SIS_S_9582(-)']).'</td>';
+		echo '<td align="right">'.$d['net'].'</td>';
 			echo '</tr>';
 
 }
