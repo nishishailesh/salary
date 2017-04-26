@@ -51,12 +51,31 @@ ob_end_clean();
 //exit(0);
 
 $pdf = new ACCOUNT('P', 'mm', 'A4', true, 'UTF-8', false);
-//$pdf->SetFont('dejavusans', '', 9); 	//big file size and time and memory
-//	public function SetFont($family, $style='', $size=null, $fontfile='', $subset='default', $out=true) {
+
+///var/www/html/salary/tcpdf/tools
+//copy a ttf file as x.ttf and run following command
+//./tcpdf_addfont.php -b -t TrueTypeUnicode -f 32 -i x.ttf
+//above command will creat three files at appropriate place in font folder
+//cp /usr/share/fonts/truetype/freefont/FreeSerif*.ttf .
+//$pdf->SetFont('x', '', 9); 	//to print gujarati
+
+//$pdf->SetFont('freeserif', '', 9); 	//to print gujarati
 $pdf->SetFont('courier', '', 9);		//smaller size better performance
 $pdf->SetMargins(20, 20, 20);
 $pdf->AddPage();
 $pdf->writeHTML($myStr, true, false, true, false, '');
+
+//public function Write($h, $txt, $link='', $fill=false, $align='', $ln=false, $stretch=0, $firstline=false, $firstblock=false, $maxh=0, $wadj=0, $margin='')
+
+/*
+$x='તમારે ગુજરાતી માં જે લખવુ હોય તે લખો. Copy કરી Paste કરો';
+
+$y= mb_convert_encoding($x, 'UTF-8', 'HTML-ENTITIES');
+//echo '<tr><td>'.$x.'</td></tr>';
+	
+$pdf->Write(4, $x, $link='', $fill=false, $align='', $ln=false, $stretch=0, $firstline=false, $firstblock=false, $maxh=0, $wadj=0, $margin='');
+*/
+
 $pdf->Output($_POST['bill_group'].'_'.$_POST['bill_number'].'_salary_slip.pdf', 'I');
 
 

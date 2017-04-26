@@ -1454,9 +1454,10 @@ function print_one_salary_slip($link,$staff_id,$bill_group)
 	echo '<br><br><br><br><br><br><br>';
 	
 	echo '<table border="0" >';
-	echo '<tr><td><h5 align="right" style="float:right">Account Officer</h5></td></tr>';
-	echo '<tr><td><h5 align="right">Government Medical College</h5></td></tr>';
-	echo '<tr><td><h5 align="rignt">Surat</h5></td></tr>';
+	echo '<tr><td width="30%"></td><td width="30%"></td><td><h5 align="center">Account Officer</h5></td></tr>';
+	echo '<tr><td width="30%"></td><td width="30%"></td><td><h5 align="center">Government Medical College</h5></td></tr>';
+	echo '<tr><td width="30%"></td><td width="30%"></td><td><h5 align="center">Surat</h5></td></tr>';
+
 	echo '</table>';
 	
 }
